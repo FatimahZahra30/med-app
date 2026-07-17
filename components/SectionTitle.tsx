@@ -20,6 +20,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "700",
         color: theme.colors.foreground,
-        marginBottom: theme.spacing.xs,
+        marginBottom: theme.spacing.md,
     },
 });
