@@ -29,6 +29,7 @@ export default function HeaderCard({
   }).format(now);
 
   return (
+    <View style={styles.shadowContainer}>
     <LinearGradient
       colors={["#4F46E5", "#6366F1"]}
       start={{ x: 0, y: 0 }}
@@ -53,14 +54,36 @@ export default function HeaderCard({
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
     </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+    shadowContainer: {
+    borderRadius: 24,
+    marginBottom: theme.spacing.lg,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+
+    elevation: 8,
+  },
+
+  gradient: {
+    borderRadius: 24,
+    padding: theme.spacing.lg,
+  },
+  
   container: {
     borderRadius: 24,
     padding: theme.spacing.lg,
-    marginBottom: theme.spacing.lg,
+    marginBottom: theme.spacing.sm,
+    ...theme.shadow.card,
   },
 
   topRow: {
@@ -96,7 +119,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 22,
+    fontSize: 21,
     fontWeight: "700",
     color: "#FFFFFF",
   },
