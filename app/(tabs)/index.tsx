@@ -4,7 +4,7 @@ import HeaderCard from "@/components/HeaderCard";
 import { theme } from "@/constants/theme";
 import SectionTitle from "@/components/SectionTitle";
 import FeatureCard from "@/components/FeatureCard";
-import { Calculator, Scale, Activity, Syringe } from 'lucide-react-native';
+import { Calculator, Scale, Activity, Syringe, Timer, Zap, Navigation, Heart, BookOpen, FileText, Pill, Waves, Wind, AlertTriangle} from 'lucide-react-native';
 
 export default function HomeScreen() {
   return (
@@ -34,12 +34,38 @@ export default function HomeScreen() {
         <FeatureCard
           title="Cardiac Arrest"
           features={[
-            { icon: Calculator, text: "ALS Algorithm" },
-            { icon: Scale, text: "CPR Timer" },
-            { icon: Activity, text: "Emergency Drugs" },
+            { icon: Navigation, text: "ALS Algorithm" },
+            { icon: Timer, text: "CPR Timer" },
+            { icon: Zap, text: "Emergency Drugs" },
           ]}
-          icon={Syringe}
+          icon={Heart}
           accentColor="#DC2626"
+          onPress={() => {}}
+        />
+      </View>
+
+      <View style={styles.cardRow}>
+        <FeatureCard
+          title="Drug Library"
+          features={[
+            { icon: BookOpen, text: "Drug Information" },
+            { icon: Waves, text: "Regional Anaesthesia" },
+            { icon: FileText, text: "Coagulation Guide" },
+          ]}
+          icon={Pill}
+          accentColor="#0891B2"
+          onPress={() => {}}
+        />
+
+        <FeatureCard
+          title="Airway"
+          features={[
+            { icon: FileText, text: "DAS Guidelines" },
+            { icon: AlertTriangle, text: "Difficult Airway" },
+            { icon: Activity, text: "Flowcharts" },
+          ]}
+          icon={Wind}
+          accentColor="#059669"
           onPress={() => {}}
         />
       </View>
@@ -58,5 +84,6 @@ const styles = StyleSheet.create({
   flexDirection: "row",
   justifyContent: "space-between",
   gap: 12,
+  paddingBottom: 12,
 },
 });
