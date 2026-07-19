@@ -1,9 +1,13 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { theme } from "@/constants/theme";
 
@@ -16,74 +20,203 @@ import DrugCard from "@/components/DrugCard";
 import { DRUGS } from "@/data/drugs";
 import { Calculator } from "lucide-react-native";
 
+
 export default function DrugCalculatorScreen() {
+
   const [weight, setWeight] = useState(70);
 
   const [query, setQuery] = useState("");
 
   const [category, setCategory] = useState("all");
 
+
+  const scrollRef = useRef<ScrollView>(null);
+
+
+
   const filteredDrugs = useMemo(() => {
+
     return DRUGS.filter((drug) => {
-      const matchesSearch = drug.name
-        .toLowerCase()
-        .includes(query.toLowerCase());
+
+      const matchesSearch =
+        drug.name
+          .toLowerCase()
+          .includes(query.toLowerCase());
+
 
       const matchesCategory =
         category === "all" ||
         drug.category === category;
 
-      return matchesSearch && matchesCategory;
+
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
+
     });
+
   }, [query, category]);
 
+
+
+  const handleSearchFocus = () => {
+
+    setTimeout(() => {
+
+      scrollRef.current?.scrollTo({
+
+        y: 300,
+
+        animated: true,
+
+      });
+
+    }, 300);
+
+  };
+
+
+
   return (
-    <SafeAreaView style={styles.container}>
+
+    <SafeAreaView
+      style={styles.container}
+      edges={[
+        "top",
+        "left",
+        "right",
+      ]}
+    >
+
+      <KeyboardAvoidingView
+
+        style={{
+          flex: 1,
+        }}
+
+        behavior={
+          Platform.OS === "ios"
+            ? "padding"
+            : undefined
+        }
+
+      >
+
         <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.content}
+
+          ref={scrollRef}
+
+          showsVerticalScrollIndicator={false}
+
+          keyboardShouldPersistTaps="handled"
+
+          keyboardDismissMode="on-drag"
+
+          contentContainerStyle={
+            styles.content
+          }
+
         >
-        <ScreenHeader
-          title="Drug Dosage Calculator"
-          subtitle="Weight-based medication dosing"
-        />
 
-        <WeightCard
-          weight={weight}
-          onChange={setWeight}
-        />
 
-        <CategoryChips
-          selected={category}
-          onSelect={setCategory}
-        />
+          <ScreenHeader
 
-        <SearchBar
-          value={query}
-          onChangeText={setQuery}
-        />
+            title="Drug Dosage Calculator"
 
-        {filteredDrugs.map((drug) => (
-          <DrugCard
-            key={drug.id}
-            drug={drug}
-            weight={weight}
-            onPress={() => {}}
+            subtitle="Weight-based medication dosing"
+
+
           />
-        ))}
-      </ScrollView>
+
+
+
+          <WeightCard
+
+            weight={weight}
+
+            onChange={setWeight}
+
+          />
+
+
+
+          <SearchBar
+
+            value={query}
+
+            onChangeText={setQuery}
+
+            onFocus={handleSearchFocus}
+
+          />
+
+
+
+          <CategoryChips
+
+            selected={category}
+
+            onSelect={setCategory}
+
+          />
+
+
+
+          {filteredDrugs.map((drug) => (
+
+            <DrugCard
+
+              key={drug.id}
+
+              drug={drug}
+
+              weight={weight}
+
+              onPress={() => {}}
+
+            />
+
+          ))}
+
+
+        </ScrollView>
+
+
+      </KeyboardAvoidingView>
+
+
     </SafeAreaView>
+
   );
+
 }
 
+
+
 const styles = StyleSheet.create({
+
   container: {
+
     flex: 1,
-    backgroundColor: theme.colors.background,
+
+    backgroundColor:
+      theme.colors.background,
+
   },
 
+
   content: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing.xl,
+
+    paddingHorizontal:
+      theme.spacing.lg,
+
+    paddingTop:
+      theme.spacing.md,
+
+    paddingBottom:
+      120,
+
   },
+
 });

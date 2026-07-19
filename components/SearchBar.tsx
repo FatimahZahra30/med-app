@@ -1,60 +1,132 @@
-import { StyleSheet, TextInput, View } from "react-native";
-import { Search } from "lucide-react-native";
+import {
+  StyleSheet,
+  TextInput,
+  View,
+} from "react-native";
+
+import {
+  Search,
+} from "lucide-react-native";
 
 import { theme } from "@/constants/theme";
 
+
 type SearchBarProps = {
+
   value: string;
-  onChangeText: (text: string) => void;
+
+  onChangeText:
+    (text:string)=>void;
+
+  onFocus?: ()=>void;
+
 };
 
+
+
 export default function SearchBar({
+
   value,
+
   onChangeText,
+
+  onFocus,
+
 }: SearchBarProps) {
+
+
   return (
+
     <View style={styles.container}>
+
+
       <Search
-        size={18}
-        color={theme.colors.mutedForeground}
+
+        size={20}
+
+        color={
+          theme.colors.mutedForeground
+        }
+
       />
+
 
       <TextInput
+
         style={styles.input}
+
         placeholder="Search drugs..."
-        placeholderTextColor={theme.colors.mutedForeground}
+
+        placeholderTextColor={
+          theme.colors.mutedForeground
+        }
+
         value={value}
+
         onChangeText={onChangeText}
+
+        onFocus={onFocus}
+
+        keyboardType="default"
+
       />
+
+
     </View>
+
   );
+
 }
 
+
+
 const styles = StyleSheet.create({
+
   container: {
-    backgroundColor: theme.colors.card,
 
-    borderRadius: theme.radius.lg,
+    flexDirection:"row",
 
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    alignItems:"center",
 
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
+    backgroundColor:
+      theme.colors.card,
 
-    flexDirection: "row",
-    alignItems: "center",
 
-    marginBottom: theme.spacing.md,
+    borderRadius:
+      theme.radius.lg,
+
+
+    borderWidth:1,
+
+    borderColor:
+      theme.colors.border,
+
+
+    paddingHorizontal:16,
+
+    height:52,
+
+
+    marginBottom:
+      theme.spacing.md,
+
+
+    ...theme.shadow.card,
+
   },
+
 
   input: {
-    flex: 1,
 
-    marginLeft: theme.spacing.sm,
+    flex:1,
 
-    fontSize: 16,
+    marginLeft:10,
 
-    color: theme.colors.foreground,
+    fontSize:15,
+
+    color:
+      theme.colors.foreground,
+
   },
+
 });
