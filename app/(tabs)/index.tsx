@@ -1,14 +1,19 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, View} from "react-native";
+import { ScrollView, StyleSheet, View} from "react-native";
 import HeaderCard from "@/components/HeaderCard";
 import { theme } from "@/constants/theme";
 import SectionTitle from "@/components/SectionTitle";
 import FeatureCard from "@/components/FeatureCard";
+import { router } from "expo-router";
 import { Calculator, Scale, Activity, Syringe, Timer, Zap, Navigation, Heart, BookOpen, FileText, Pill, Waves, Wind, AlertTriangle} from 'lucide-react-native';
 
 export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.content}
+      >
       <HeaderCard
         title="Anaesthesia Toolkit"
         subtitle="Clinical Reference & Decision Support"
@@ -28,7 +33,7 @@ export default function HomeScreen() {
           ]}
           icon={Syringe}
           accentColor="#4F46E5"
-          onPress={() => {}}
+          onPress={() => router.push("/(tabs)/dosageCalc")}
         />
 
         <FeatureCard
@@ -69,6 +74,7 @@ export default function HomeScreen() {
           onPress={() => {}}
         />
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -77,8 +83,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    padding: theme.spacing.lg,
   },
+
+  content: {
+  paddingHorizontal: theme.spacing.lg,
+  paddingTop: theme.spacing.md,
+  paddingBottom: 40,
+},
 
   cardRow: {
   flexDirection: "row",
