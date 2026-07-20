@@ -1,9 +1,16 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Pill } from "lucide-react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
+import { ChevronRight } from "lucide-react-native";
 
 import { theme } from "@/constants/theme";
 import { Drug } from "@/types/drug";
 import { calculateDose } from "@/utils/calculations";
+
 
 type DrugCardProps = {
   drug: Drug;
@@ -11,130 +18,309 @@ type DrugCardProps = {
   onPress?: () => void;
 };
 
+
 export default function DrugCard({
   drug,
   weight,
   onPress,
 }: DrugCardProps) {
+
+
   const result = calculateDose(weight, drug);
 
+
   return (
+
     <Pressable
+
+      onPress={onPress}
+
       style={({ pressed }) => [
         styles.container,
+
         pressed && styles.pressed,
       ]}
-      onPress={onPress}
+
     >
-      <View style={styles.left}>
-        <View style={styles.iconContainer}>
-          <Pill
-            size={20}
-            color={theme.colors.primary}
-            strokeWidth={2}
-          />
+
+
+      {/* Main content */}
+
+      <View style={styles.content}>
+
+
+        <Text style={styles.name}>
+          {drug.name}
+        </Text>
+
+
+
+        <Text style={styles.subtitle}>
+          {drug.range} · {drug.indication}
+        </Text>
+
+
+
+        <View style={styles.badge}>
+
+          <Text style={styles.badgeText}>
+            {drug.category}
+          </Text>
+
         </View>
 
-        <View style={styles.info}>
-          <Text style={styles.name}>{drug.name}</Text>
 
-          <Text style={styles.note}>{drug.note}</Text>
-
-          <Text style={styles.range}>{drug.range}</Text>
-        </View>
       </View>
+
+
+
+
+      {/* Dose */}
 
       <View style={styles.right}>
-        <Text style={styles.amount}>
-          {result.amount}
-        </Text>
 
-        <Text style={styles.unit}>
-          {result.unit}
-        </Text>
+
+        <View style={styles.doseRow}>
+
+          <Text style={styles.amount}>
+            {result.amount}
+          </Text>
+
+
+          <Text style={styles.unit}>
+            {result.unit}
+          </Text>
+
+
+        </View>
+
+
+
+        <View style={styles.infoRow}>
+
+          <Text style={styles.info}>
+            Info
+          </Text>
+
+
+          <ChevronRight
+            size={16}
+            color={theme.colors.primary}
+          />
+
+        </View>
+
+
       </View>
+
+
     </Pressable>
+
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.card,
 
-    borderRadius: theme.radius.lg,
+
+const styles = StyleSheet.create({
+
+
+  container: {
+
+    backgroundColor:
+      theme.colors.card,
+
+
+    borderRadius: 22,
+
 
     borderWidth: 1,
-    borderColor: theme.colors.border,
 
-    padding: theme.spacing.lg,
+    borderColor:
+      theme.colors.border,
+
+
+    padding: 18,
+
 
     flexDirection: "row",
-    justifyContent: "space-between",
+
     alignItems: "center",
 
-    marginBottom: theme.spacing.md,
+    justifyContent: "space-between",
+
+
+    marginBottom:
+      theme.spacing.md,
+
 
     ...theme.shadow.card,
+
   },
 
-  left: {
-    flexDirection: "row",
+
+
+  content: {
+
     flex: 1,
+
+    paddingRight: 12,
+
   },
 
-  iconContainer: {
-    width: 42,
-    height: 42,
 
-    borderRadius: 16,
-
-    backgroundColor: theme.colors.secondary,
-
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  info: {
-    marginLeft: theme.spacing.md,
-    flex: 1,
-  },
 
   name: {
-    fontSize: 16,
+
+    fontSize: 18,
+
+    fontWeight: "800",
+
+    color:
+      theme.colors.foreground,
+
+  },
+
+
+
+  subtitle: {
+
+    marginTop: 5,
+
+    fontSize: 13,
+
+    lineHeight: 18,
+
+    color:
+      theme.colors.mutedForeground,
+
+  },
+
+
+
+  badge: {
+
+    alignSelf: "flex-start",
+
+    marginTop: 10,
+
+
+    backgroundColor:
+      "#EEF2FF",
+
+
+    paddingHorizontal: 10,
+
+    paddingVertical: 5,
+
+
+    borderRadius: 999,
+
+  },
+
+
+
+  badgeText: {
+
+    fontSize: 12,
+
     fontWeight: "700",
-    color: theme.colors.foreground,
+
+
+    color:
+      theme.colors.primary,
+
+
+    textTransform: "capitalize",
+
   },
 
-  note: {
-    marginTop: 2,
-    fontSize: 13,
-    color: theme.colors.mutedForeground,
-  },
 
-  range: {
-    marginTop: 6,
-    fontSize: 13,
-    fontWeight: "600",
-    color: theme.colors.primary,
-  },
 
   right: {
+
     alignItems: "flex-end",
-    marginLeft: theme.spacing.md,
+
+    justifyContent: "center",
+
   },
+
+
+
+  doseRow: {
+
+    flexDirection: "row",
+
+    alignItems: "baseline",
+
+  },
+
+
 
   amount: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: theme.colors.primary,
+
+    fontSize: 30,
+
+    fontWeight: "800",
+
+    color:
+      theme.colors.primary,
+
   },
+
+
 
   unit: {
-    fontSize: 13,
-    color: theme.colors.mutedForeground,
+
+    marginLeft: 5,
+
+
+    fontSize: 16,
+
+    fontWeight: "600",
+
+    color:
+      theme.colors.mutedForeground,
+
   },
 
-  pressed: {
-    opacity: 0.9,
+
+
+  infoRow: {
+
+    flexDirection: "row",
+
+    alignItems: "center",
+
+    marginTop: 10,
+
   },
+
+
+
+  info: {
+
+    fontSize: 13,
+
+    fontWeight: "700",
+
+    color:
+      theme.colors.primary,
+
+  },
+
+
+
+  pressed: {
+
+    opacity: 0.85,
+
+    transform: [
+      {
+        scale: 0.985,
+      },
+    ],
+
+  },
+
+
 });
