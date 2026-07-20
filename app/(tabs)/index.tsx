@@ -9,7 +9,10 @@ import { Calculator, Scale, Activity, Syringe, Timer, Zap, Navigation, Heart, Bo
 
 export default function HomeScreen() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+        style={styles.container}
+        edges={["top"]}
+      >
       <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.content}

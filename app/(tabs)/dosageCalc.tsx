@@ -72,6 +72,7 @@ export default function DrugCalculatorScreen() {
   return (
     <SafeAreaView
       style={styles.container}
+      edges={["top"]}
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
