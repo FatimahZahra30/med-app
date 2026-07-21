@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import Slider from "@react-native-community/slider";
 import { Scale } from "lucide-react-native";
@@ -14,17 +9,20 @@ import { theme } from "@/constants/theme";
 type WeightCardProps = {
   weight: number;
   onChange: (weight: number) => void;
+
+  accentColor?: string;
+  accentBackground?: string;
 };
 
 export default function WeightCard({
   weight,
   onChange,
-}: WeightCardProps) {
 
-  // Text shown while editing
+  accentColor = theme.colors.primary,
+  accentBackground = "#EEF2FF",
+}: WeightCardProps) {
   const [inputValue, setInputValue] = useState(weight.toString());
 
-  // Keep input synced when slider changes the weight
   useEffect(() => {
     setInputValue(weight.toString());
   }, [weight]);
@@ -45,30 +43,34 @@ export default function WeightCard({
 
   return (
     <View style={styles.container}>
-
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <Scale
-            size={20}
-            color={theme.colors.primary}
-          />
+        <View
+          style={[
+            styles.iconContainer,
+            {
+              backgroundColor: accentBackground,
+            },
+          ]}
+        >
+          <Scale size={20} color={accentColor} />
         </View>
 
-        <Text style={styles.title}>
-          Patient Weight
-        </Text>
+        <Text style={styles.title}>Patient Weight</Text>
       </View>
 
       {/* Weight Input */}
       <View style={styles.weightRow}>
+        <Text style={styles.label}>Current Weight</Text>
 
-        <Text style={styles.label}>
-          Current Weight
-        </Text>
-
-        <View style={styles.inputContainer}>
-
+        <View
+          style={[
+            styles.inputContainer,
+            {
+              borderColor: accentBackground,
+            },
+          ]}
+        >
           <TextInput
             value={inputValue}
             keyboardType="decimal-pad"
@@ -78,12 +80,8 @@ export default function WeightCard({
             returnKeyType="done"
           />
 
-          <Text style={styles.unit}>
-            kg
-          </Text>
-
+          <Text style={styles.unit}>kg</Text>
         </View>
-
       </View>
 
       {/* Slider */}
@@ -93,9 +91,9 @@ export default function WeightCard({
         maximumValue={200}
         step={0.5}
         value={weight}
-        minimumTrackTintColor={theme.colors.primary}
+        minimumTrackTintColor={accentColor}
         maximumTrackTintColor="#E5E7EB"
-        thumbTintColor={theme.colors.primary}
+        thumbTintColor={accentColor}
         onValueChange={(value) => {
           onChange(Number(value.toFixed(1)));
         }}
@@ -109,7 +107,6 @@ export default function WeightCard({
         <Text style={styles.sliderLabel}>150</Text>
         <Text style={styles.sliderLabel}>200</Text>
       </View>
-
     </View>
   );
 }
@@ -142,8 +139,6 @@ const styles = StyleSheet.create({
     height: 38,
 
     borderRadius: 12,
-
-    backgroundColor: "#EEF2FF",
 
     justifyContent: "center",
     alignItems: "center",
@@ -184,7 +179,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
 
     borderWidth: 1,
-    borderColor: theme.colors.border,
 
     backgroundColor: "#F8FAFC",
   },
