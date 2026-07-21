@@ -1,22 +1,22 @@
 import { useMemo, useRef, useState } from "react";
 
 import {
-  ScrollView,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { theme } from "@/constants/theme";
 
-import ScreenHeader from "@/components/ScreenHeader";
-import WeightCard from "@/components/WeightCard";
-import SearchBar from "@/components/SearchBar";
 import CategoryChips from "@/components/CategoryChips";
 import DrugCard from "@/components/DrugCard";
 import DrugInfoSheet from "@/components/DrugInfoSheet";
+import ScreenHeader from "@/components/ScreenHeader";
+import SearchBar from "@/components/SearchBar";
+import WeightCard from "@/components/WeightCard";
 
 import { DRUGS } from "@/data/drugs";
 import { Drug } from "@/types/drug";
@@ -29,11 +29,9 @@ export default function DrugCalculatorScreen() {
 
   const [category, setCategory] = useState("all");
 
-  const [selectedDrug, setSelectedDrug] =
-    useState<Drug | null>(null);
+  const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
 
-  const [sheetVisible, setSheetVisible] =
-    useState(false);
+  const [sheetVisible, setSheetVisible] = useState(false);
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -43,9 +41,7 @@ export default function DrugCalculatorScreen() {
         .toLowerCase()
         .includes(query.toLowerCase());
 
-      const matchesCategory =
-        category === "all" ||
-        drug.category === category;
+      const matchesCategory = category === "all" || drug.category === category;
 
       return matchesSearch && matchesCategory;
     });
@@ -70,17 +66,10 @@ export default function DrugCalculatorScreen() {
   };
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={["top"]}
-    >
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={
-          Platform.OS === "ios"
-            ? "padding"
-            : undefined
-        }
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView
           ref={scrollRef}
@@ -94,10 +83,7 @@ export default function DrugCalculatorScreen() {
             subtitle="Weight-based medication dosing"
           />
 
-          <WeightCard
-            weight={weight}
-            onChange={setWeight}
-          />
+          <WeightCard weight={weight} onChange={setWeight} />
 
           <SearchBar
             value={query}
@@ -105,10 +91,7 @@ export default function DrugCalculatorScreen() {
             onFocus={handleSearchFocus}
           />
 
-          <CategoryChips
-            selected={category}
-            onSelect={setCategory}
-          />
+          <CategoryChips selected={category} onSelect={setCategory} />
 
           {filteredDrugs.map((drug) => (
             <DrugCard
