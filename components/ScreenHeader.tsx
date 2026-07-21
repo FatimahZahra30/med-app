@@ -16,6 +16,8 @@ type ScreenHeaderProps = {
   iconColor?: string;
 
   showBackButton?: boolean;
+
+  titleSize?: number;
 };
 
 export default function ScreenHeader({
@@ -29,6 +31,8 @@ export default function ScreenHeader({
   iconColor = "white",
 
   showBackButton = true,
+
+  titleSize = 22,
 }: ScreenHeaderProps) {
   return (
     <View style={styles.wrapper}>
@@ -51,7 +55,11 @@ export default function ScreenHeader({
           )}
 
           <View style={styles.textContainer}>
-            <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+            <Text
+              style={[styles.title, { fontSize: titleSize }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {title}
             </Text>
 

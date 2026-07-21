@@ -89,6 +89,7 @@ export default function DrugCalculatorScreen() {
             value={query}
             onChangeText={setQuery}
             onFocus={handleSearchFocus}
+            placeholder="Search drugs..."
           />
 
           <CategoryChips selected={category} onSelect={setCategory} />

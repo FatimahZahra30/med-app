@@ -119,7 +119,7 @@ export default function HomeScreen() {
             ]}
             icon={Siren}
             accentColor="#D97706"
-            onPress={() => {}}
+            onPress={() => router.push("/(tabs)/emergencies")}
           />
         </View>
       </ScrollView>
