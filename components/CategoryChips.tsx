@@ -2,6 +2,7 @@ import { ScrollView, Pressable, Text, StyleSheet } from "react-native";
 
 import { theme } from "@/constants/theme";
 import { CATEGORIES } from "@/constants/categories";
+import { CATEGORY_COLORS } from "@/constants/categoryColors";
 
 type CategoryChipsProps = {
   selected: string;
@@ -18,60 +19,78 @@ export default function CategoryChips({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      {CATEGORIES.map((category) => (
-        <Pressable
-          key={category.id}
-          onPress={() => onSelect(category.id)}
-          style={[
-            styles.chip,
-            selected === category.id && styles.selectedChip,
-          ]}
-        >
-          <Text
+      {CATEGORIES.map((category) => {
+
+        const colours = CATEGORY_COLORS[category.id];
+
+        const isSelected = selected === category.id;
+
+        return (
+          <Pressable
+            key={category.id}
+            onPress={() => onSelect(category.id)}
             style={[
-              styles.text,
-              selected === category.id && styles.selectedText,
+              styles.chip,
+              {
+                backgroundColor: isSelected
+                  ? colours.bg
+                  : colours.light,
+
+                borderColor: colours.border,
+              },
             ]}
           >
-            {category.label}
-          </Text>
-        </Pressable>
-      ))}
+
+            <Text
+              style={[
+                styles.text,
+                {
+                  color: isSelected
+                    ? "#FFFFFF"
+                    : colours.text,
+                },
+              ]}
+            >
+              {category.label}
+            </Text>
+
+          </Pressable>
+        );
+
+      })}
     </ScrollView>
   );
 }
 
+
 const styles = StyleSheet.create({
+
   container: {
     paddingBottom: theme.spacing.md,
+
     gap: theme.spacing.sm,
   },
 
+
   chip: {
+
     paddingHorizontal: 16,
+
     paddingVertical: 8,
 
     borderRadius: 999,
 
     borderWidth: 1,
-    borderColor: theme.colors.border,
 
-    backgroundColor: theme.colors.card,
   },
 
-  selectedChip: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
-  },
 
   text: {
+
     fontSize: 14,
-    fontWeight: "600",
 
-    color: theme.colors.foreground,
+    fontWeight: "700",
+
   },
 
-  selectedText: {
-    color: "#FFFFFF",
-  },
 });

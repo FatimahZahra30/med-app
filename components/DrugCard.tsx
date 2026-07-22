@@ -10,6 +10,7 @@ import { ChevronRight } from "lucide-react-native";
 import { theme } from "@/constants/theme";
 import { Drug } from "@/types/drug";
 import { calculateDose } from "@/utils/calculations";
+import { CATEGORY_COLORS } from "@/constants/categoryColors";
 
 
 type DrugCardProps = {
@@ -27,6 +28,11 @@ export default function DrugCard({
 
 
   const result = calculateDose(weight, drug);
+
+
+  const categoryColor =
+    CATEGORY_COLORS[drug.category];
+
 
 
   return (
@@ -61,10 +67,34 @@ export default function DrugCard({
 
 
 
-        <View style={styles.badge}>
 
-          <Text style={styles.badgeText}>
+        {/* Category Badge */}
+
+        <View
+          style={[
+            styles.badge,
+            {
+              backgroundColor:
+                categoryColor.light,
+
+              borderColor:
+                categoryColor.border,
+            },
+          ]}
+        >
+
+          <Text
+            style={[
+              styles.badgeText,
+              {
+                color:
+                  categoryColor.text,
+              },
+            ]}
+          >
+
             {drug.category}
+
           </Text>
 
         </View>
@@ -82,13 +112,25 @@ export default function DrugCard({
 
         <View style={styles.doseRow}>
 
-          <Text style={styles.amount}>
+          <Text
+            style={[
+              styles.amount,
+              {
+                color:
+                  categoryColor.bg,
+              },
+            ]}
+          >
+
             {result.amount}
+
           </Text>
 
 
           <Text style={styles.unit}>
+
             {result.unit}
+
           </Text>
 
 
@@ -96,17 +138,34 @@ export default function DrugCard({
 
 
 
+
         <View style={styles.infoRow}>
 
-          <Text style={styles.info}>
+
+          <Text
+            style={[
+              styles.info,
+              {
+                color:
+                  categoryColor.text,
+              },
+            ]}
+          >
+
             Info
+
           </Text>
 
 
+
           <ChevronRight
+
             size={16}
-            color={theme.colors.primary}
+
+            color={categoryColor.text}
+
           />
+
 
         </View>
 
@@ -204,16 +263,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
 
 
-    backgroundColor:
-      "#EEF2FF",
-
-
     paddingHorizontal: 10,
 
     paddingVertical: 5,
 
 
     borderRadius: 999,
+
+
+    borderWidth: 1,
 
   },
 
@@ -224,10 +282,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
 
     fontWeight: "700",
-
-
-    color:
-      theme.colors.primary,
 
 
     textTransform: "capitalize",
@@ -261,9 +315,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
 
     fontWeight: "800",
-
-    color:
-      theme.colors.primary,
 
   },
 
@@ -302,9 +353,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
 
     fontWeight: "700",
-
-    color:
-      theme.colors.primary,
 
   },
 
