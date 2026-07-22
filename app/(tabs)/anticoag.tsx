@@ -15,15 +15,22 @@ import ScreenHeader from "@/components/ScreenHeader";
 import SearchBar from "@/components/SearchBar";
 import ClinicalNotice from "@/components/ClinicalNotice";
 import AnticoagCard from "@/components/AnticoagCard";
+import AnticoagulantModal from "@/components/AnticoagModal";
 
 import { TriangleAlert } from "lucide-react-native";
 
 import { anticoagulants } from "@/data/anticoagulants";
+import { Anticoagulant } from "@/types/anticoagulant";
 
 
 export default function AnticoagulantScreen() {
 
   const [query, setQuery] = useState("");
+
+  const [selectedAnticoagulant, setSelectedAnticoagulant] =
+  useState<Anticoagulant | null>(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -133,23 +140,25 @@ export default function AnticoagulantScreen() {
           {filteredAnticoagulants.map((drug) => (
 
             <AnticoagCard
-
               key={drug.name}
-
               drug={drug}
-
               onPress={() => {
-                console.log(drug.name);
+                setSelectedAnticoagulant(drug);
+                setModalVisible(true);
               }}
-
             />
 
           ))}
-
-
-
         </ScrollView>
-
+        
+        <AnticoagulantModal
+          visible={modalVisible}
+          anticoag={selectedAnticoagulant}
+          onClose={() => {
+            setModalVisible(false);
+            setSelectedAnticoagulant(null);
+          }}
+          />
 
       </KeyboardAvoidingView>
 

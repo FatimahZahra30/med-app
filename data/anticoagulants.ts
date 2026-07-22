@@ -9,6 +9,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "Delayed: 36–72 h therapeutic effect",
     metabolism: "Hepatic (CYP2C9); renal excretion of metabolites",
     monitoring: "INR (target 2.0–3.0 for most indications)",
+    note: "Check INR before block. Bridging may be needed.",
   },
   {
     name: "Heparin (UFH) IV", hold: "2–4 hours", restart: "1 h after block / catheter removal", notes: "Sub-therapeutic anticoagulation needed.",
@@ -18,6 +19,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "Immediate (IV)",
     metabolism: "Reticuloendothelial system; dose-dependent clearance",
     monitoring: "aPTT (1.5–2.5× control) or anti-Xa",
+    note: "Sub-therapeutic anticoagulation needed.",
   },
   {
     name: "Heparin (UFH) SC", hold: "4–6 hours", restart: "1 h after block", notes: "",
@@ -27,6 +29,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "20–60 min (SC)",
     metabolism: "Reticuloendothelial system",
     monitoring: "aPTT",
+    note: "Common VTE prophylaxis. Safe with catheter if dosed appropriately.",
   },
   {
     name: "LMWH (therapeutic, e.g. enoxaparin 1 mg/kg BID)", hold: "24 hours", restart: "4 h after catheter removal / 6–8 h post-block", notes: "High-risk regimen. Avoid indwelling catheters.",
@@ -36,6 +39,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "3–5 h (peak anti-Xa)",
     metabolism: "Renal excretion (unchanged)",
     monitoring: "Anti-Xa levels if renal impairment / pregnancy / obesity",
+    note: "High-risk regimen. Avoid indwelling catheters.",
   },
   {
     name: "LMWH (prophylactic, e.g. enoxaparin 40 mg OD)", hold: "12 hours", restart: "4 h after block", notes: "Common VTE prophylaxis. Safe with catheter if dosed appropriately.",
@@ -45,6 +49,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "3–5 h (peak)",
     metabolism: "Renal excretion",
     monitoring: "Usually none at prophylactic dose; anti-Xa in special populations",
+    note: "Common VTE prophylaxis. Safe with catheter if dosed appropriately.",
   },
   {
     name: "Apixaban", hold: "48 hours (CrCl >50); 72 h (CrCl ≤50)", restart: "6–8 h after block / catheter removal", notes: "DOAC. Renal function critical.",
@@ -54,6 +59,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "3–4 h (peak)",
     metabolism: "Hepatic (CYP3A4) ~57%; renal ~27%",
     monitoring: "No routine monitoring; anti-Xa in selected cases",
+    note: "DOAC. Renal function critical.",
   },
   {
     name: "Rivaroxaban", hold: "48 hours (CrCl >50); 72 h (CrCl ≤50)", restart: "6 h after block", notes: "DOAC. Avoid indwelling catheters.",
@@ -63,6 +69,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "2–4 h (peak)",
     metabolism: "Hepatic (CYP3A4/CYP2J2); renal ~33% unchanged",
     monitoring: "No routine monitoring; anti-Xa in selected cases",
+    note: "DOAC. Avoid indwelling catheters.",
   },
   {
     name: "Dabigatran", hold: "48 h (CrCl >80); 72 h (CrCl 50–80); 96 h (CrCl <50)", restart: "6 h after block", notes: "Direct thrombin inhibitor. Strongly renal-dependent.",
@@ -72,6 +79,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "1–3 h (peak)",
     metabolism: "~80% renal excretion unchanged (not CYP-dependent)",
     monitoring: "No routine monitoring; dTT or ECT in selected cases",
+    note: "Direct thrombin inhibitor. Strongly renal-dependent.",
   },
   {
     name: "Edoxaban", hold: "48 hours", restart: "6 h after block", notes: "DOAC.",
@@ -81,6 +89,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "1–2 h (peak)",
     metabolism: "Hepatic (CES1); renal ~50% unchanged",
     monitoring: "No routine monitoring; anti-Xa in selected cases",
+    note: "DOAC.",
   },
   {
     name: "Clopidogrel", hold: "7 days", restart: "After 24 h", notes: "P2Y12 inhibitor. Single-agent may be acceptable for superficial blocks.",
@@ -90,6 +99,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "2 h (loading dose 300–600 mg); 3–5 days (maintenance)",
     metabolism: "Hepatic (CYP2C19) two-step activation",
     monitoring: "None routinely; platelet function assays in selected cases",
+    note: "P2Y12 inhibitor. Single-agent may be acceptable for superficial blocks.",
   },
   {
     name: "Ticagrelor", hold: "5 days", restart: "After 24 h", notes: "P2Y12 inhibitor. Reversible.",
@@ -99,6 +109,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "30 min–2 h (peak)",
     metabolism: "Hepatic (CYP3A4); active metabolite formed",
     monitoring: "None routinely",
+    note: "P2Y12 inhibitor. Reversible.",
   },
   {
     name: "Prasugrel", hold: "7–10 days", restart: "After 24 h", notes: "P2Y12 inhibitor. Potent.",
@@ -108,6 +119,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "30 min (loading dose 60 mg)",
     metabolism: "Hepatic (intestinal esterases + CYP3A4/2B6)",
     monitoring: "None routinely",
+    note: "P2Y12 inhibitor. Potent.",
   },
   {
     name: "Aspirin", hold: "Not required", restart: "Continue", notes: "Safe for neuraxial & most regional blocks (ASRA).",
@@ -117,6 +129,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "30–60 min",
     metabolism: "Hepatic (esterases); hydrolyzed to salicylate",
     monitoring: "None routinely",
+    note: "Safe for neuraxial & most regional blocks (ASRA).",
   },
   {
     name: "NSAIDs (e.g. ibuprofen, diclofenac)", hold: "Not required", restart: "Continue", notes: "Safe as monotherapy.",
@@ -126,6 +139,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "1–2 h",
     metabolism: "Hepatic; renal excretion of metabolites",
     monitoring: "None routinely",
+    note: "Safe as monotherapy.",
   },
   {
     name: "Abciximab", hold: "48 hours", restart: "Consult haematology", notes: "GPIIb/IIIa inhibitor.",
@@ -135,6 +149,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "Minutes (IV bolus)",
     metabolism: "Not metabolized; reticuloendothelial clearance",
     monitoring: "Platelet count; bleeding time/platelet function assays",
+    note: "GPIIb/IIIa inhibitor.",
   },
   {
     name: "Eptifibatide", hold: "8 hours", restart: "Consult haematology", notes: "GPIIb/IIIa inhibitor.",
@@ -144,6 +159,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "5 min (IV bolus)",
     metabolism: "Renal excretion (~50%); remainder hepatic/plasma",
     monitoring: "Platelet count; ACT/aPTT",
+    note: "GPIIb/IIIa inhibitor.",
   },
   {
     name: "Tirofiban", hold: "8 hours", restart: "Consult haematology", notes: "GPIIb/IIIa inhibitor.",
@@ -153,6 +169,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "5 min (IV bolus)",
     metabolism: "Renal excretion (~65% unchanged); hepatic ~25%",
     monitoring: "Platelet count; ACT/aPTT",
+    note: "GPIIb/IIIa inhibitor.",
   },
   {
     name: "Fondaparinux", hold: "36–42 hours", restart: "6–12 h after block", notes: "Factor Xa inhibitor.",
@@ -162,6 +179,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "2 h (peak)",
     metabolism: "Renal excretion unchanged (not CYP-dependent)",
     monitoring: "Anti-Xa levels in selected cases (renal impairment, obesity)",
+    note: "Factor Xa inhibitor.",
   },
   {
     name: "Dipyridamole", hold: "Not required", restart: "Continue", notes: "Usually combined with aspirin.",
@@ -171,6 +189,7 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "75 min (peak)",
     metabolism: "Hepatic (glucuronidation); biliary/fecal excretion",
     monitoring: "None routinely",
+    note: "Usually combined with aspirin.",
   },
   {
     name: "Rivaroxaban (prophylactic 10 mg OD)", hold: "24 hours", restart: "6 h after block", notes: "Lower dose prophylactic regimen.",
@@ -180,5 +199,6 @@ export const anticoagulants: Anticoagulant[] = [
     onset: "2–4 h (peak)",
     metabolism: "Hepatic (CYP3A4/CYP2J2); renal ~33% unchanged",
     monitoring: "No routine monitoring; anti-Xa in selected cases",
+    note: "Lower dose prophylactic regimen.",
   },
 ];

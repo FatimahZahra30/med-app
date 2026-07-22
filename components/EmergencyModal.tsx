@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-    Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -11,13 +10,11 @@ import {
 } from "react-native";
 
 import {
-  ClipboardList,
   CircleAlert,
   Pill,
   Stethoscope,
   X,
   TriangleAlert,
-  AlertCircle,
   AlertOctagonIcon,
 } from "lucide-react-native";
 
