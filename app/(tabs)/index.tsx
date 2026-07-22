@@ -119,7 +119,7 @@ export default function HomeScreen() {
             ]}
             icon={Pill}
             accentColor="#D97706" 
-            onPress={() => {}}
+            onPress={() => router.push("/(tabs)/anticoag")}
           />
         </View>
       </ScrollView>

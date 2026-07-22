@@ -57,7 +57,6 @@ export default function ScreenHeader({
           <View style={styles.textContainer}>
             <Text
               style={[styles.title, { fontSize: titleSize }]}
-              numberOfLines={1}
               ellipsizeMode="tail"
             >
               {title}

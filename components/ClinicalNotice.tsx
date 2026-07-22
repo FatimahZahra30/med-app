@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
 
     padding: 18,
 
-    paddingBottom: 10,
+    paddingBottom: 15,
 
     marginBottom: 16,
 
