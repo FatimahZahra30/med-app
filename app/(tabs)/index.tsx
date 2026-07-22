@@ -99,18 +99,6 @@ export default function HomeScreen() {
 
         <View style={styles.cardRow}>
           <FeatureCard
-            title="Anticoagulants & Regional"
-            features={[
-              { icon: Droplets, text: "Anticoagulants" },
-              { icon: Layers, text: "Neuraxial Blocks" },
-              { icon: BookMarked, text: "ASRA Guidelines" },
-            ]}
-            icon={Pill}
-            accentColor="#DB2777"
-            onPress={() => {}}
-          />
-
-          <FeatureCard
             title="Anesthetic Emergencies"
             features={[
               { icon: Thermometer, text: "MH Protocol" },
@@ -118,8 +106,20 @@ export default function HomeScreen() {
               { icon: ShieldAlert, text: "Anaphylaxis" },
             ]}
             icon={Siren}
-            accentColor="#D97706"
+            accentColor="#DB2777"
             onPress={() => router.push("/(tabs)/emergencies")}
+          />
+          
+          <FeatureCard
+            title="Anticoagulants & Regional"
+            features={[
+              { icon: Droplets, text: "Anticoagulants" },
+              { icon: Layers, text: "Neuraxial Blocks" },
+              { icon: BookMarked, text: "ASRA Guidelines" },
+            ]}
+            icon={Pill}
+            accentColor="#D97706" 
+            onPress={() => {}}
           />
         </View>
       </ScrollView>

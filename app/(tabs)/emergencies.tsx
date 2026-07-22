@@ -17,6 +17,9 @@ import SearchBar from "@/components/SearchBar";
 
 import { emergencies } from "@/data/emergencies";
 import { Emergency } from "@/types/emergency";
+import EmergencyModal from "@/components/EmergencyModal";
+import ClinicalNotice from "@/components/ClinicalNotice";
+import { TriangleAlert } from "lucide-react-native";
 
 export default function AnesthEmergenciesScreen() {
   const [query, setQuery] = useState("");
@@ -59,8 +62,25 @@ export default function AnesthEmergenciesScreen() {
           <ScreenHeader
             title="Anesthetic Emergencies"
             subtitle="RCoA-guided protocols · tap to view details"
-            gradient={["#D97706", "#E88C23"]}
+            gradient={["#DB2777", "#f54593"]}
             titleSize={20}
+          />
+
+          <ClinicalNotice
+
+            title="Clinical Reference"
+
+            icon={
+              <TriangleAlert
+                size={18}
+                color="#ed182d"
+              />
+            }
+
+            body="Clinical reference based on Royal College of Anaesthetists (RCoA) / AAGBI guidelines. Always follow local protocols and call for senior help early.
+          "
+
+
           />
 
           <SearchBar
@@ -80,6 +100,12 @@ export default function AnesthEmergenciesScreen() {
             />
           ))}
         </ScrollView>
+
+        <EmergencyModal
+          visible={selectedEmergency !== null}
+          emergency={selectedEmergency}
+          onClose={() => setSelectedEmergency(null)}
+        />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

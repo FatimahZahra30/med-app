@@ -15,7 +15,6 @@ import {
   Clock3,
   Pill,
   ShieldAlert,
-  Syringe,
   Timer,
   X,
 } from "lucide-react-native";
@@ -51,7 +50,6 @@ export default function DrugInfoSheet({
       />
 
       <View style={styles.sheet}>
-        <View style={styles.handle} />
 
         <Pressable
           style={styles.closeButton}
@@ -241,22 +239,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
 
     paddingHorizontal: 24,
-    paddingTop: 16,
+    paddingTop: 24,
   },
 
-  handle: {
-    alignSelf: "center",
-
-    width: 42,
-
-    height: 5,
-
-    borderRadius: 999,
-
-    backgroundColor: "#D1D5DB",
-
-    marginBottom: 18,
-  },
 
   closeButton: {
     position: "absolute",

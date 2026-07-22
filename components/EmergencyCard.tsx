@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
 
     marginTop: 10,
 
-    backgroundColor: "#EEF2FF",
+    backgroundColor: "#ffeef4",
 
     paddingHorizontal: 10,
 
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
 
     fontWeight: "700",
 
-    color: theme.colors.primary,
+    color: "#DB2777",
 
     textTransform: "capitalize",
   },
