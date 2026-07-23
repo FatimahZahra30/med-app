@@ -93,7 +93,7 @@ export default function HomeScreen() {
             ]}
             icon={Wind}
             accentColor="#059669"
-            onPress={() => {}}
+            onPress={() => router.push("/(tabs)/difficult")}
           />
         </View>
 
