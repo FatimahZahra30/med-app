@@ -195,8 +195,13 @@ useEffect(() => {
                 {plan.decision}
               </Text>
 
+            </View>
 
-              {plan.nextPlan && (
+          </View>
+
+        </View>
+
+        {plan.nextPlan && (
                 <Pressable
                   onPress={onNext}
                   style={styles.nextButton}
@@ -208,17 +213,11 @@ useEffect(() => {
 
                   <ChevronRight
                     size={18}
-                    color={decisionColours.text}
+                    color="#059669"
                   />
 
                 </Pressable>
               )}
-
-            </View>
-
-          </View>
-
-        </View>
 
 
       </Animated.View>
@@ -231,7 +230,7 @@ useEffect(() => {
 
         <RotateCcw
           size={18}
-          color={GREEN.primary}
+          color={theme.colors.mutedForeground}
         />
 
         <Text style={styles.resetText}>
@@ -337,16 +336,23 @@ const styles = StyleSheet.create({
   },
 
   nextButton: {
-    marginTop: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
+  marginTop: 12,
+  flexDirection: "row",
+  alignItems: "center",
+  alignSelf: "flex-start",
+  gap: 4,
+  paddingHorizontal: 12,
+  paddingVertical: 7,
+  borderRadius: 999,
+  backgroundColor: "#ECFDF5",
+  borderWidth: 1,
+  borderColor: "#86EFAC",
+},
 
   nextText: {
     fontWeight: "700",
     fontSize: 15,
-    color: "#a34307"
+    color: "#059669"
   },
 
   resetButton: {
@@ -361,7 +367,7 @@ const styles = StyleSheet.create({
   resetText: {
     fontSize: 15,
     fontWeight: "700",
-    color: GREEN.primary,
+    color: theme.colors.mutedForeground,
   },
 
 });
