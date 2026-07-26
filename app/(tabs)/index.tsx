@@ -67,7 +67,7 @@ export default function HomeScreen() {
             ]}
             icon={Heart}
             accentColor="#DC2626"
-            onPress={() => {}}
+            onPress={() => router.push("/(tabs)/arrest")}
           />
         </View>
 
