@@ -16,6 +16,7 @@ import { theme } from "@/constants/theme";
 
 type Props = {
   elapsed: number;
+  started: boolean;
   running: boolean;
   onToggle: () => void;
 };
@@ -23,6 +24,7 @@ type Props = {
 
 export default function ArrestTimer({
   elapsed,
+  started,
   running,
   onToggle,
 }: Props) {
@@ -96,30 +98,32 @@ export default function ArrestTimer({
 
 
 
-      <Pressable
-        onPress={onToggle}
-        style={styles.controlButton}
-      >
+      {started && (
 
-        {
-          running ? (
+        <Pressable
+            onPress={onToggle}
+            style={styles.controlButton}
+        >
 
-            <Pause
-              size={18}
-              color="#DC2626"
-            />
+            {running ? (
 
-          ) : (
+                <Pause
+                    size={18}
+                    color="#DC2626"
+                />
 
-            <Play
-              size={18}
-              color="#DC2626"
-            />
+            ) : (
 
-          )
-        }
+                <Play
+                    size={18}
+                    color="#DC2626"
+                />
 
-      </Pressable>
+            )}
+
+        </Pressable>
+
+    )}
 
 
     </View>
