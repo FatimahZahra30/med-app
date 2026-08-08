@@ -242,9 +242,7 @@ export default function ArrestCard({
 
 
 
-
-        <View style={{ gap: theme.spacing.lg }}>
-          {
+        {
           showRhythmTimer && (
 
             <RhythmCountdown
@@ -255,6 +253,8 @@ export default function ArrestCard({
 
           )
         }
+
+        <View style={styles.adrenaline}>
 
         {adrenalineGiven && (
           <AdrenalineTimer
@@ -600,5 +600,9 @@ actionHint: {
   fontWeight: "600",
   color: "#92400E",
 },
+
+adrenaline: {
+  marginTop: 20,
+}
 
 });
