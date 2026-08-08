@@ -42,8 +42,10 @@ export const arrestFlow: Record<string, ArrestNode> = {
     title: "CPR Cycle 1",
     steps: [
       "CPR for 2 min",
-      "Prepare adrenaline (1 mg IV)",
       "Prepare amiodarone (300 mg)",
+    ],
+    actionSteps: [
+      "Prepare adrenaline (1 mg IV)",
     ],
     yes: "rhythm2",
     no: "rhythm2",

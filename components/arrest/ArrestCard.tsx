@@ -25,6 +25,8 @@ type Props = {
   checkedSteps: string[];
 
   onToggleStep: (step:string) => void;
+  onAction: (action: string) => void;
+  adrenalineGiven: boolean;
 
   onYes: () => void;
 
@@ -42,8 +44,6 @@ type Props = {
   onToggleRhythm: () => void;
 };
 
-
-
 const RED = {
   primary:"#DC2626",
   light:"#FEF2F2",
@@ -56,6 +56,8 @@ export default function ArrestCard({
   node,
   checkedSteps,
   onToggleStep,
+  onAction,
+  adrenalineGiven,
   onYes,
   onNo,
   onReset,
@@ -115,6 +117,62 @@ export default function ArrestCard({
 
 
         <View style={styles.section}>
+
+          {node.actionSteps && node.actionSteps.length > 0 && (
+            <View style={styles.actionSection}>
+              {node.actionSteps.map((action) => {
+                const given = adrenalineGiven;
+
+                return (
+                  <Pressable
+                    key={action}
+                    style={[
+                      styles.actionCard,
+                      given && styles.actionCardGiven,
+                    ]}
+                    onPress={() => onAction(action)}
+                  >
+                    <View style={styles.actionContent}>
+                      <View
+                        style={[
+                          styles.actionIndicator,
+                          given && styles.actionIndicatorGiven,
+                        ]}
+                      />
+
+                      <View style={styles.actionTextContainer}>
+                        <Text
+                          style={[
+                            styles.actionLabel,
+                            given && styles.actionLabelGiven,
+                          ]}
+                        >
+                          {given
+                            ? "ADRENALINE GIVEN ✓"
+                            : "ADRENALINE DUE"}
+                        </Text>
+
+                        <Text
+                          style={[
+                            styles.actionText,
+                            given && styles.actionTextGiven,
+                          ]}
+                        >
+                          1 mg IV
+                        </Text>
+
+                        {!given && (
+                          <Text style={styles.actionHint}>
+                            Tap when given
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
 
 
           {
@@ -478,5 +536,73 @@ const styles = StyleSheet.create({
     color:
       theme.colors.mutedForeground,
   },
+
+  actionSection: {
+  marginTop: 20,
+  gap: 10,
+},
+
+actionCard: {
+  backgroundColor: "#FEF3C7",
+  borderWidth: 1,
+  borderColor: "#FCD34D",
+  borderRadius: 16,
+  padding: 16,
+},
+
+actionContent: {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 12,
+},
+
+actionIndicator: {
+  width: 6,
+  alignSelf: "stretch",
+  borderRadius: 6,
+  backgroundColor: "#F59E0B",
+},
+
+actionTextContainer: {
+  flex: 1,
+},
+
+actionLabel: {
+  fontSize: 10,
+  fontWeight: "800",
+  letterSpacing: 1,
+  color: "#92400E",
+  paddingTop: 7,
+},
+
+actionText: {
+  fontSize: 16,
+  fontWeight: "800",
+  color: "#78350F",
+},
+
+actionCardGiven: {
+  backgroundColor: "#FFFBEB",
+  borderColor: "#FCD34D",
+},
+
+actionIndicatorGiven: {
+  backgroundColor: "#FCD34D",
+},
+
+actionLabelGiven: {
+  color: "#92400E",
+},
+
+actionTextGiven: {
+  color: "#92400E",
+},
+
+actionHint: {
+  marginTop: 6,
+  fontSize: 13,
+  fontWeight: "600",
+  color: "#92400E",
+},
 
 });

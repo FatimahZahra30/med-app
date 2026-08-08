@@ -30,6 +30,8 @@ export default function CardiacArrestScreen() {
 
   const [rhythmRunning, setRhythmRunning] =
     useState(false);
+  
+  const [adrenalineGiven, setAdrenalineGiven] = useState(false);
 
   const [currentNodeId, setCurrentNodeId] =
     useState("start");
@@ -95,7 +97,11 @@ export default function CardiacArrestScreen() {
     setRhythmRunning(prev => !prev);
   };
 
-
+  const handleAction = (action: string) => {
+    if (action === "Prepare adrenaline (1 mg IV)") {
+      setAdrenalineGiven(true);
+    }
+  };
 
   const toggleStep = (step:string) => {
     setCheckedSteps(prev =>
@@ -189,6 +195,8 @@ export default function CardiacArrestScreen() {
     setRhythmRemaining(120);
     setRhythmRunning(false);
 
+    setAdrenalineGiven(false);
+
     setCheckedSteps([]);
 
     setCurrentNodeId("start");
@@ -250,31 +258,21 @@ export default function CardiacArrestScreen() {
 
 
           <ArrestCard
-            node={currentNode}
-            checkedSteps={checkedSteps}
-            onToggleStep={toggleStep}
-            onYes={handleYes}
-            onNo={handleNo}
-            onReset={handleReset}
-
-            showRhythmTimer={
-              rhythmRunning ||
-              rhythmRemaining < 120
-            }
-
-            rhythmRemaining={
-              rhythmRemaining
-            }
-
-            rhythmRunning={
-              rhythmRunning
-            }
-
-            onToggleRhythm={
-              toggleRhythmTimer
-            }
-
-          />
+          node={currentNode}
+          checkedSteps={checkedSteps}
+          onToggleStep={toggleStep}
+          onAction={handleAction}
+          adrenalineGiven={adrenalineGiven}
+          onYes={handleYes}
+          onNo={handleNo}
+          onReset={handleReset}
+          showRhythmTimer={
+            started && currentNode.timer === true
+          }
+          rhythmRemaining={rhythmRemaining}
+          rhythmRunning={rhythmRunning}
+          onToggleRhythm={toggleRhythmTimer}
+        />
 
 
         </ScrollView>
