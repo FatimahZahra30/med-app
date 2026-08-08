@@ -14,6 +14,7 @@ import { theme } from "@/constants/theme";
 import ScreenHeader from "@/components/ScreenHeader";
 import ArrestTimer from "@/components/arrest/ArrestTimer";
 import ArrestCard from "@/components/arrest/ArrestCard";
+import AdrenalineTimer from "@/components/arrest/AdrenalineTimer";
 
 import { arrestFlow } from "@/data/cardiacArrest";
 
@@ -32,6 +33,8 @@ export default function CardiacArrestScreen() {
     useState(false);
   
   const [adrenalineGiven, setAdrenalineGiven] = useState(false);
+  const [adrenalineRemaining, setAdrenalineRemaining] = useState(180);
+  const [adrenalineRunning, setAdrenalineRunning] = useState(false);
 
   const [currentNodeId, setCurrentNodeId] =
     useState("start");
@@ -78,6 +81,22 @@ export default function CardiacArrestScreen() {
     rhythmRemaining
   ]);
 
+  // 3 MIN ADRENALINE COUNTDOWN
+useEffect(() => {
+  if (!adrenalineRunning) return;
+
+  if (adrenalineRemaining <= 0) {
+    setAdrenalineRunning(false);
+    return;
+  }
+
+  const interval = setInterval(() => {
+    setAdrenalineRemaining(prev => prev - 1);
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [adrenalineRunning, adrenalineRemaining]);
+
 
 
   const startRhythmTimer = () => {
@@ -100,6 +119,8 @@ export default function CardiacArrestScreen() {
   const handleAction = (action: string) => {
     if (action === "Prepare adrenaline (1 mg IV)") {
       setAdrenalineGiven(true);
+      setAdrenalineRemaining(180);
+      setAdrenalineRunning(true);
     }
   };
 
@@ -196,6 +217,8 @@ export default function CardiacArrestScreen() {
     setRhythmRunning(false);
 
     setAdrenalineGiven(false);
+    setAdrenalineRemaining(180);
+    setAdrenalineRunning(false);
 
     setCheckedSteps([]);
 
@@ -263,6 +286,8 @@ export default function CardiacArrestScreen() {
           onToggleStep={toggleStep}
           onAction={handleAction}
           adrenalineGiven={adrenalineGiven}
+          adrenalineRemaining={adrenalineRemaining}
+          adrenalineRunning={adrenalineRunning}
           onYes={handleYes}
           onNo={handleNo}
           onReset={handleReset}

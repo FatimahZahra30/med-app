@@ -17,6 +17,7 @@ import { theme } from "@/constants/theme";
 import { ArrestNode } from "@/types/cardiacArrest";
 
 import RhythmCountdown from "@/components/arrest/RythmCountdown";
+import AdrenalineTimer from "@/components/arrest/AdrenalineTimer";
 
 
 type Props = {
@@ -26,7 +27,6 @@ type Props = {
 
   onToggleStep: (step:string) => void;
   onAction: (action: string) => void;
-  adrenalineGiven: boolean;
 
   onYes: () => void;
 
@@ -34,6 +34,9 @@ type Props = {
 
   onReset: () => void;
 
+  adrenalineGiven: boolean;
+  adrenalineRemaining: number;
+  adrenalineRunning: boolean;
 
   showRhythmTimer: boolean;
 
@@ -58,6 +61,8 @@ export default function ArrestCard({
   onToggleStep,
   onAction,
   adrenalineGiven,
+  adrenalineRemaining,
+  adrenalineRunning,
   onYes,
   onNo,
   onReset,
@@ -149,7 +154,7 @@ export default function ArrestCard({
                         >
                           {given
                             ? "ADRENALINE GIVEN ✓"
-                            : "ADRENALINE DUE"}
+                            : "PREPARE ADRENALINE"}
                         </Text>
 
                         <Text
@@ -238,7 +243,8 @@ export default function ArrestCard({
 
 
 
-        {
+        <View style={{ gap: theme.spacing.lg }}>
+          {
           showRhythmTimer && (
 
             <RhythmCountdown
@@ -250,8 +256,12 @@ export default function ArrestCard({
           )
         }
 
-
-
+        {adrenalineGiven && (
+          <AdrenalineTimer
+            remaining={adrenalineRemaining}
+          />
+        )}
+        </View>
 
         <View style={styles.buttonRow}>
 
@@ -278,9 +288,6 @@ export default function ArrestCard({
             )
           }
 
-
-
-
           {
             node.yesLabel && (
 
@@ -288,7 +295,6 @@ export default function ArrestCard({
                 style={styles.primaryButton}
                 onPress={onYes}
               >
-
 
                 <Text
                   style={
@@ -312,13 +318,7 @@ export default function ArrestCard({
 
 
         </View>
-
-
-
       </View>
-
-
-
 
       <Pressable
         style={styles.resetButton}
@@ -339,15 +339,11 @@ export default function ArrestCard({
 
 
       </Pressable>
-
-
-
     </>
 
   );
 
 }
-
 
 
 const styles = StyleSheet.create({
@@ -568,7 +564,7 @@ actionTextContainer: {
 },
 
 actionLabel: {
-  fontSize: 10,
+  fontSize: 12,
   fontWeight: "800",
   letterSpacing: 1,
   color: "#92400E",
