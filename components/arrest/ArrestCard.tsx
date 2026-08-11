@@ -184,11 +184,11 @@ export default function ArrestCard({
         )}
 
         {/* ADRENALINE TIMER */}
-        <View style={styles.adrTimer}>
-          {adrenalineGiven && (
+        {adrenalineGiven && (
+          <View style={styles.adrTimer}>
             <AdrenalineTimer remaining={adrenalineRemaining} />
-          )}
-        </View>
+          </View>
+        )}
 
         {/* NAVIGATION BUTTONS */}
         <View style={styles.buttonRow}>
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   /* RESET */
 
   resetButton: {
-    marginTop: 5,
+    marginTop: -4,
 
     flexDirection: "row",
 
