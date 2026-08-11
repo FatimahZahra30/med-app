@@ -59,8 +59,8 @@ export const arrestFlow: Record<string, ArrestNode> = {
     steps: ["Reassess rhythm — still shockable?"],
     yes: "shock2",
     no: "rosc",
-    yesLabel: "Yes — shockable",
-    noLabel: "No — check ROSC",
+    yesLabel: "Shockable",
+    noLabel: "Check ROSC",
     timer: false,
   },
   shock2: {

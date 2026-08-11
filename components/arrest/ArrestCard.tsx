@@ -1,12 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import {
-  CheckSquare,
-  ChevronRight,
-  HeartPulse,
-  RotateCcw,
-  Square,
-} from "lucide-react-native";
+import { HeartPulse, RotateCcw } from "lucide-react-native";
 
 import { theme } from "@/constants/theme";
 import { ArrestNode } from "@/types/cardiacArrest";
@@ -85,11 +79,6 @@ export default function ArrestCard({
             <Text style={styles.title}>{node.title}</Text>
           </View>
         </View>
-
-        {/* PROGRESS */}
-        <Text style={styles.progress}>
-          {checkedSteps.length} / {node.steps.length} completed
-        </Text>
 
         <View style={styles.section}>
           {/* ACTION CARDS */}
@@ -175,32 +164,17 @@ export default function ArrestCard({
           )}
 
           {/* NORMAL CHECKLIST */}
-          {node.steps.map((step) => {
-            const checked = checkedSteps.includes(step);
+          {node.steps.map((step) => (
+            <View key={step} style={styles.stepRow}>
+              <View style={styles.bullet} />
 
-            return (
-              <Pressable
-                key={step}
-                style={styles.stepRow}
-                onPress={() => onToggleStep(step)}
-              >
-                {checked ? (
-                  <CheckSquare size={22} color={RED.primary} />
-                ) : (
-                  <Square size={22} color="#94A3B8" />
-                )}
-
-                <Text
-                  style={[styles.stepText, checked && styles.completedStep]}
-                >
-                  {step}
-                </Text>
-              </Pressable>
-            );
-          })}
+              <Text style={styles.stepText}>{step}</Text>
+            </View>
+          ))}
         </View>
 
         {/* RHYTHM TIMER */}
+
         {showRhythmTimer && (
           <RhythmCountdown
             remaining={rhythmRemaining}
@@ -210,7 +184,11 @@ export default function ArrestCard({
         )}
 
         {/* ADRENALINE TIMER */}
-        {adrenalineGiven && <AdrenalineTimer remaining={adrenalineRemaining} />}
+        <View style={styles.adrTimer}>
+          {adrenalineGiven && (
+            <AdrenalineTimer remaining={adrenalineRemaining} />
+          )}
+        </View>
 
         {/* NAVIGATION BUTTONS */}
         <View style={styles.buttonRow}>
@@ -223,8 +201,6 @@ export default function ArrestCard({
           {node.yesLabel && (
             <Pressable style={styles.primaryButton} onPress={onYes}>
               <Text style={styles.primaryButtonText}>{node.yesLabel}</Text>
-
-              <ChevronRight size={18} color="white" />
             </Pressable>
           )}
         </View>
@@ -315,10 +291,12 @@ const styles = StyleSheet.create({
     color: theme.colors.foreground,
   },
 
-  completedStep: {
-    textDecorationLine: "line-through",
-
-    opacity: 0.6,
+  bullet: {
+    width: 6,
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: RED.primary,
+    marginTop: 7,
   },
 
   /* ACTION SECTION */
@@ -507,10 +485,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  adrTimer: {
+    marginTop: theme.spacing.lg,
+  },
+
   /* RESET */
 
   resetButton: {
-    marginTop: 18,
+    marginTop: 5,
 
     flexDirection: "row",
 
