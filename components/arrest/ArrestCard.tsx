@@ -1,68 +1,62 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
   CheckSquare,
-  Square,
   ChevronRight,
-  RotateCcw,
   HeartPulse,
+  RotateCcw,
+  Square,
 } from "lucide-react-native";
 
 import { theme } from "@/constants/theme";
 import { ArrestNode } from "@/types/cardiacArrest";
 
-import RhythmCountdown from "@/components/arrest/RythmCountdown";
 import AdrenalineTimer from "@/components/arrest/AdrenalineTimer";
-
+import RhythmCountdown from "@/components/arrest/RythmCountdown";
 
 type Props = {
   node: ArrestNode;
 
   checkedSteps: string[];
 
-  onToggleStep: (step:string) => void;
+  onToggleStep: (step: string) => void;
+
   onAction: (action: string) => void;
-
-  onYes: () => void;
-
-  onNo: () => void;
-
-  onReset: () => void;
 
   adrenalineGiven: boolean;
   adrenalineRemaining: number;
   adrenalineRunning: boolean;
+  shockDelivered: boolean;
+
+  onYes: () => void;
+  onNo: () => void;
+  onReset: () => void;
 
   showRhythmTimer: boolean;
 
   rhythmRemaining: number;
-
   rhythmRunning: boolean;
 
   onToggleRhythm: () => void;
 };
 
 const RED = {
-  primary:"#DC2626",
-  light:"#FEF2F2",
-  border:"#FECACA",
+  primary: "#DC2626",
+  light: "#FEF2F2",
+  border: "#FECACA",
 };
-
-
 
 export default function ArrestCard({
   node,
   checkedSteps,
   onToggleStep,
   onAction,
+
   adrenalineGiven,
   adrenalineRemaining,
   adrenalineRunning,
+  shockDelivered,
+
   onYes,
   onNo,
   onReset,
@@ -71,69 +65,55 @@ export default function ArrestCard({
   rhythmRemaining,
   rhythmRunning,
   onToggleRhythm,
-
-}:Props){
-
-
+}: Props) {
   return (
-
     <>
-
-
       <View style={styles.card}>
-
-
+        {/* HEADER */}
         <View
           style={[
             styles.header,
             {
-              backgroundColor:RED.light,
-              borderColor:RED.border,
-            }
+              backgroundColor: RED.light,
+              borderColor: RED.border,
+            },
           ]}
         >
-
           <View style={styles.headerRow}>
+            <HeartPulse size={22} color={RED.primary} />
 
-
-            <HeartPulse
-              size={22}
-              color={RED.primary}
-            />
-
-
-            <Text style={styles.title}>
-              {node.title}
-            </Text>
-
-
+            <Text style={styles.title}>{node.title}</Text>
           </View>
-
-
         </View>
 
-
-
+        {/* PROGRESS */}
         <Text style={styles.progress}>
           {checkedSteps.length} / {node.steps.length} completed
         </Text>
 
-
-
-
         <View style={styles.section}>
-
+          {/* ACTION CARDS */}
           {node.actionSteps && node.actionSteps.length > 0 && (
             <View style={styles.actionSection}>
               {node.actionSteps.map((action) => {
-                const given = adrenalineGiven;
+                const isShock = action.toLowerCase().includes("shock");
+                const isAdrenaline = action
+                  .toLowerCase()
+                  .includes("adrenaline");
+
+                const given = isShock ? shockDelivered : adrenalineGiven;
 
                 return (
                   <Pressable
                     key={action}
                     style={[
                       styles.actionCard,
-                      given && styles.actionCardGiven,
+
+                      isShock && styles.shockActionCard,
+
+                      isShock && given && styles.shockActionCardGiven,
+
+                      !isShock && given && styles.adrenalineActionCardGiven,
                     ]}
                     onPress={() => onAction(action)}
                   >
@@ -141,7 +121,8 @@ export default function ArrestCard({
                       <View
                         style={[
                           styles.actionIndicator,
-                          given && styles.actionIndicatorGiven,
+                          isShock && styles.shockIndicator,
+                          given && !isShock && styles.actionIndicatorGiven,
                         ]}
                       />
 
@@ -153,8 +134,12 @@ export default function ArrestCard({
                           ]}
                         >
                           {given
-                            ? "ADRENALINE GIVEN ✓"
-                            : "PREPARE ADRENALINE"}
+                            ? isShock
+                              ? "SHOCK DELIVERED ✓"
+                              : "ADRENALINE GIVEN ✓"
+                            : isShock
+                              ? "DELIVER SHOCK"
+                              : "PREPARE ADRENALINE"}
                         </Text>
 
                         <Text
@@ -163,12 +148,14 @@ export default function ArrestCard({
                             given && styles.actionTextGiven,
                           ]}
                         >
-                          1 mg IV
+                          {isShock ? "200 J biphasic" : "1 mg IV"}
                         </Text>
 
                         {!given && (
                           <Text style={styles.actionHint}>
-                            Tap when given
+                            {isShock
+                              ? "Tap when shock delivered"
+                              : "Tap when given"}
                           </Text>
                         )}
                       </View>
@@ -179,430 +166,344 @@ export default function ArrestCard({
             </View>
           )}
 
+          {/* NORMAL CHECKLIST */}
+          {node.steps.map((step) => {
+            const checked = checkedSteps.includes(step);
 
-          {
-            node.steps.map(step => {
+            return (
+              <Pressable
+                key={step}
+                style={styles.stepRow}
+                onPress={() => onToggleStep(step)}
+              >
+                {checked ? (
+                  <CheckSquare size={22} color={RED.primary} />
+                ) : (
+                  <Square size={22} color="#94A3B8" />
+                )}
 
-              const checked =
-                checkedSteps.includes(step);
-
-
-
-              return (
-
-                <Pressable
-                  key={step}
-                  style={styles.stepRow}
-                  onPress={() =>
-                    onToggleStep(step)
-                  }
+                <Text
+                  style={[styles.stepText, checked && styles.completedStep]}
                 >
-
-                  {
-                    checked
-
-                    ?
-
-                    <CheckSquare
-                      size={22}
-                      color={RED.primary}
-                    />
-
-                    :
-
-                    <Square
-                      size={22}
-                      color="#94A3B8"
-                    />
-
-                  }
-
-
-
-                  <Text
-                    style={[
-                      styles.stepText,
-                      checked &&
-                      styles.completedStep
-                    ]}
-                  >
-                    {step}
-                  </Text>
-
-
-                </Pressable>
-
-              );
-
-            })
-          }
-
-
+                  {step}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
 
-
-
-        {
-          showRhythmTimer && (
-
-            <RhythmCountdown
-              remaining={rhythmRemaining}
-              running={rhythmRunning}
-              onToggle={onToggleRhythm}
-            />
-
-          )
-        }
-
-        <View style={styles.adrenaline}>
-
-        {adrenalineGiven && (
-          <AdrenalineTimer
-            remaining={adrenalineRemaining}
+        {/* RHYTHM TIMER */}
+        {showRhythmTimer && (
+          <RhythmCountdown
+            remaining={rhythmRemaining}
+            running={rhythmRunning}
+            onToggle={onToggleRhythm}
           />
         )}
-        </View>
 
+        {/* ADRENALINE TIMER */}
+        {adrenalineGiven && <AdrenalineTimer remaining={adrenalineRemaining} />}
+
+        {/* NAVIGATION BUTTONS */}
         <View style={styles.buttonRow}>
+          {node.noLabel && (
+            <Pressable style={styles.secondaryButton} onPress={onNo}>
+              <Text style={styles.secondaryButtonText}>{node.noLabel}</Text>
+            </Pressable>
+          )}
 
+          {node.yesLabel && (
+            <Pressable style={styles.primaryButton} onPress={onYes}>
+              <Text style={styles.primaryButtonText}>{node.yesLabel}</Text>
 
-          {
-            node.noLabel && (
-
-              <Pressable
-                style={styles.secondaryButton}
-                onPress={onNo}
-              >
-
-                <Text
-                  style={
-                    styles.secondaryButtonText
-                  }
-                >
-                  {node.noLabel}
-                </Text>
-
-
-              </Pressable>
-
-            )
-          }
-
-          {
-            node.yesLabel && (
-
-              <Pressable
-                style={styles.primaryButton}
-                onPress={onYes}
-              >
-
-                <Text
-                  style={
-                    styles.primaryButtonText
-                  }
-                >
-                  {node.yesLabel}
-                </Text>
-
-
-                <ChevronRight
-                  size={18}
-                  color="white"
-                />
-
-
-              </Pressable>
-
-            )
-          }
-
-
+              <ChevronRight size={18} color="white" />
+            </Pressable>
+          )}
         </View>
       </View>
 
-      <Pressable
-        style={styles.resetButton}
-        onPress={onReset}
-      >
+      {/* RESET */}
+      <Pressable style={styles.resetButton} onPress={onReset}>
+        <RotateCcw size={18} color={theme.colors.mutedForeground} />
 
-        <RotateCcw
-          size={18}
-          color={
-            theme.colors.mutedForeground
-          }
-        />
-
-
-        <Text style={styles.resetText}>
-          Restart Algorithm
-        </Text>
-
-
+        <Text style={styles.resetText}>Restart Algorithm</Text>
       </Pressable>
     </>
-
   );
-
 }
 
-
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: theme.colors.card,
 
-  card:{
-    backgroundColor:
-      theme.colors.card,
+    borderRadius: 24,
 
-    borderRadius:24,
+    padding: 20,
 
-    padding:20,
+    borderWidth: 1,
 
-    borderWidth:1,
-
-    borderColor:
-      theme.colors.border,
+    borderColor: theme.colors.border,
 
     ...theme.shadow.card,
   },
 
+  header: {
+    borderRadius: 18,
 
-  header:{
-    borderRadius:18,
+    borderWidth: 1,
 
-    borderWidth:1,
+    padding: 18,
 
-    padding:18,
-
-    marginBottom:20,
+    marginBottom: 20,
   },
 
+  headerRow: {
+    flexDirection: "row",
 
-  headerRow:{
-    flexDirection:"row",
+    alignItems: "center",
 
-    alignItems:"center",
-
-    gap:10,
+    gap: 10,
   },
 
+  title: {
+    flex: 1,
 
-  title:{
-    flex:1,
+    fontSize: 23,
 
-    fontSize:23,
+    fontWeight: "800",
 
-    fontWeight:"800",
-
-    color:
-      theme.colors.foreground,
+    color: theme.colors.foreground,
   },
 
+  progress: {
+    marginBottom: 20,
 
-  progress:{
-    marginBottom:20,
+    fontSize: 14,
 
-    fontSize:14,
+    fontWeight: "700",
 
-    fontWeight:"700",
-
-    color:RED.primary,
+    color: RED.primary,
   },
 
-
-  section:{
-    gap:16,
+  section: {
+    gap: 16,
   },
 
+  stepRow: {
+    flexDirection: "row",
 
-  stepRow:{
-    flexDirection:"row",
+    alignItems: "flex-start",
 
-    alignItems:"flex-start",
-
-    gap:12,
+    gap: 12,
   },
 
+  stepText: {
+    flex: 1,
 
-  stepText:{
-    flex:1,
+    fontSize: 15,
 
-    fontSize:15,
+    lineHeight: 23,
 
-    lineHeight:23,
-
-    color:
-      theme.colors.foreground,
+    color: theme.colors.foreground,
   },
 
+  completedStep: {
+    textDecorationLine: "line-through",
 
-  completedStep:{
-    textDecorationLine:"line-through",
-
-    opacity:0.6,
+    opacity: 0.6,
   },
 
-
-  buttonRow:{
-    flexDirection:"row",
-
-    gap:12,
-
-    marginTop:28,
-  },
-
-
-  primaryButton:{
-    flex:1,
-
-    backgroundColor:
-      RED.primary,
-
-    borderRadius:14,
-
-    paddingVertical:14,
-
-    flexDirection:"row",
-
-    justifyContent:"center",
-
-    alignItems:"center",
-
-    gap:6,
-  },
-
-
-  primaryButtonText:{
-    color:"white",
-
-    fontWeight:"700",
-
-    fontSize:15,
-  },
-
-
-  secondaryButton:{
-    flex:1,
-
-    backgroundColor:"#F8FAFC",
-
-    borderWidth:1,
-
-    borderColor:"#CBD5E1",
-
-    borderRadius:14,
-
-    paddingVertical:14,
-
-    justifyContent:"center",
-
-    alignItems:"center",
-  },
-
-
-  secondaryButtonText:{
-    fontSize:15,
-
-    fontWeight:"700",
-
-    color:"#334155",
-
-    textAlign:"center",
-  },
-
-
-  resetButton:{
-    marginTop:18,
-
-    flexDirection:"row",
-
-    justifyContent:"center",
-
-    alignItems:"center",
-
-    gap:8,
-
-    paddingVertical:14,
-  },
-
-
-  resetText:{
-    fontSize:15,
-
-    fontWeight:"700",
-
-    color:
-      theme.colors.mutedForeground,
-  },
+  /* ACTION SECTION */
 
   actionSection: {
-  marginTop: 20,
-  gap: 10,
-},
+    marginTop: 4,
 
-actionCard: {
-  backgroundColor: "#FEF3C7",
-  borderWidth: 1,
-  borderColor: "#FCD34D",
-  borderRadius: 16,
-  padding: 16,
-},
+    gap: 10,
+  },
 
-actionContent: {
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 12,
-},
+  actionCard: {
+    backgroundColor: "#FEF3C7",
+    borderWidth: 1,
+    borderColor: "#FCD34D",
+    borderRadius: 16,
+    padding: 16,
+  },
 
-actionIndicator: {
-  width: 6,
-  alignSelf: "stretch",
-  borderRadius: 6,
-  backgroundColor: "#F59E0B",
-},
+  shockActionCard: {
+    backgroundColor: "#FFF1F2",
+    borderColor: "#f06d7c",
+  },
 
-actionTextContainer: {
-  flex: 1,
-},
+  shockActionCardGiven: {
+    backgroundColor: "#FEF2F2",
+    borderColor: "#F87171",
+  },
 
-actionLabel: {
-  fontSize: 12,
-  fontWeight: "800",
-  letterSpacing: 1,
-  color: "#92400E",
-  paddingTop: 7,
-},
+  adrenalineActionCardGiven: {
+    backgroundColor: "#FFFBEB",
+    borderColor: "#FCD34D",
+  },
 
-actionText: {
-  fontSize: 16,
-  fontWeight: "800",
-  color: "#78350F",
-},
+  actionContent: {
+    flexDirection: "row",
 
-actionCardGiven: {
-  backgroundColor: "#FFFBEB",
-  borderColor: "#FCD34D",
-},
+    alignItems: "center",
 
-actionIndicatorGiven: {
-  backgroundColor: "#FCD34D",
-},
+    gap: 12,
+  },
 
-actionLabelGiven: {
-  color: "#92400E",
-},
+  actionIndicator: {
+    width: 6,
+    alignSelf: "stretch",
+    borderRadius: 6,
+    backgroundColor: "#F59E0B",
+  },
 
-actionTextGiven: {
-  color: "#92400E",
-},
+  shockIndicator: {
+    backgroundColor: "#EF4444",
+  },
 
-actionHint: {
-  marginTop: 6,
-  fontSize: 13,
-  fontWeight: "600",
-  color: "#92400E",
-},
+  actionIndicatorGiven: {
+    backgroundColor: "#FCD34D",
+  },
 
-adrenaline: {
-  marginTop: 20,
-}
+  actionTextContainer: {
+    flex: 1,
+  },
 
+  actionLabel: {
+    fontSize: 12,
+
+    fontWeight: "800",
+
+    letterSpacing: 1,
+
+    color: "#92400E",
+  },
+
+  shockLabel: {
+    color: "#991B1B",
+  },
+
+  actionLabelGiven: {
+    color: "#92400E",
+  },
+
+  actionText: {
+    marginTop: 3,
+
+    fontSize: 16,
+
+    fontWeight: "800",
+
+    color: "#78350F",
+  },
+
+  actionTextGiven: {
+    color: "#92400E",
+  },
+
+  actionHint: {
+    marginTop: 6,
+
+    fontSize: 13,
+
+    fontWeight: "600",
+
+    color: "#92400E",
+  },
+
+  actionCardGiven: {
+    backgroundColor: "#FFFBEB",
+
+    borderColor: "#FCD34D",
+  },
+
+  /* BUTTONS */
+
+  buttonRow: {
+    flexDirection: "row",
+
+    gap: 12,
+
+    marginTop: 28,
+  },
+
+  primaryButton: {
+    flex: 1,
+
+    backgroundColor: RED.primary,
+
+    borderRadius: 14,
+
+    paddingVertical: 14,
+
+    flexDirection: "row",
+
+    justifyContent: "center",
+
+    alignItems: "center",
+
+    gap: 6,
+  },
+
+  primaryButtonText: {
+    color: "white",
+
+    fontWeight: "700",
+
+    fontSize: 15,
+  },
+
+  secondaryButton: {
+    flex: 1,
+
+    backgroundColor: "#F8FAFC",
+
+    borderWidth: 1,
+
+    borderColor: "#CBD5E1",
+
+    borderRadius: 14,
+
+    paddingVertical: 14,
+
+    justifyContent: "center",
+
+    alignItems: "center",
+  },
+
+  secondaryButtonText: {
+    fontSize: 15,
+
+    fontWeight: "700",
+
+    color: "#334155",
+
+    textAlign: "center",
+  },
+
+  /* RESET */
+
+  resetButton: {
+    marginTop: 18,
+
+    flexDirection: "row",
+
+    justifyContent: "center",
+
+    alignItems: "center",
+
+    gap: 8,
+
+    paddingVertical: 14,
+  },
+
+  resetText: {
+    fontSize: 15,
+
+    fontWeight: "700",
+
+    color: theme.colors.mutedForeground,
+  },
 });

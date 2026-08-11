@@ -12,41 +12,41 @@ export const arrestFlow: Record<string, ArrestNode> = {
     ],
     yes: "rhythm",
     no: "rhythm",
-    yesLabel: "CPR started — begin timer",
+    yesLabel: "Start CPR",
     noLabel: null,
     timer: false,
   },
   rhythm: {
     title: "Assess Rhythm",
-    steps: ["Assess rhythm — Is it shockable? (VF / pulseless VT)"],
+    steps: [
+      "Is it Shockable? (VF / pulseless VT)",
+      "or Non Shockable? (Asystole / PEA)",
+    ],
     yes: "shock1",
     no: "nonshockable",
     yesLabel: "Shockable",
-    noLabel: "Non-shockable (Asystole / PEA)",
+    noLabel: "Non-shockable",
     timer: false,
   },
   shock1: {
     title: "Shock 1",
+    actionSteps: ["Deliver shock (200 J biphasic)"],
     steps: [
-      "Deliver shock (150–200 J biphasic)",
       "Resume CPR immediately for 2 minutes",
+      "Prepare adrenaline (1 mg IV)",
+      "Rhythm check in 2 minutes",
     ],
-    yes: "cpr1",
-    no: "cpr1",
-    yesLabel: "Shock delivered",
-    noLabel: "Skip shock",
+    yes: "cpr2",
+    no: "peaCpr",
+    yesLabel: "Shockable",
+    noLabel: "Non-Shockable",
     timer: true,
     timerDuration: 120,
   },
-  cpr1: {
-    title: "CPR Cycle 1",
-    steps: [
-      "CPR for 2 min",
-      "Prepare amiodarone (300 mg)",
-    ],
-    actionSteps: [
-      "Prepare adrenaline (1 mg IV)",
-    ],
+  cpr2: {
+    title: "CPR Cycle 2",
+    steps: ["CPR for 2 min", "Prepare amiodarone (300 mg)"],
+    actionSteps: ["Administer adrenaline (1 mg IV)"],
     yes: "rhythm2",
     no: "rhythm2",
     yesLabel: "Rhythm check now",
@@ -64,13 +64,9 @@ export const arrestFlow: Record<string, ArrestNode> = {
     timer: false,
   },
   shock2: {
-    title: "Shock 2+",
-    steps: [
-      "Deliver shock",
-      "Give adrenaline 1 mg IV now",
-      "Give amiodarone 300 mg (if 3rd shock)",
-      "Resume CPR 2 min",
-    ],
+    title: "Shock 2",
+    actionSteps: ["Deliver shock (200 J biphasic)"],
+    steps: ["Prepare amiodarone (300 mg)", "Resume CPR 2 min"],
     yes: "cpr2",
     no: "cpr2",
     yesLabel: "Done — resume CPR",
@@ -78,8 +74,8 @@ export const arrestFlow: Record<string, ArrestNode> = {
     timer: true,
     timerDuration: 120,
   },
-  cpr2: {
-    title: "CPR Cycle 2+",
+  cpr3: {
+    title: "CPR Cycle 3",
     steps: [
       "CPR for 2 min",
       "Continue adrenaline 1 mg every 3–5 min",
@@ -151,13 +147,49 @@ export const arrestFlow: Record<string, ArrestNode> = {
 };
 
 export const REVERSIBLE = [
-  { name: "Hypoxia", detail: "Low oxygen tension. Check airway patency, oxygen supply, ETT position and bilateral chest movement. Ventilate with 100% O₂. Exclude tension pneumothorax." },
-  { name: "Hypovolaemia", detail: "Circulatory volume depletion. Identify blood loss, sepsis, anaphylaxis. Give IV fluid bolus (20 mL/kg crystalloid). Consider blood products. Control bleeding source." },
-  { name: "Hypo/hyperkalaemia", detail: "Check ABG/VBG for potassium. Hyperkalaemia (>6.5): calcium chloride 10 mmol IV, insulin-dextrose, bicarbonate. Hypokalaemia: IV potassium replacement." },
-  { name: "Hypothermia", detail: "Core temperature <35°C. Warm IV fluids, forced-air warmer, cardiopulmonary bypass for severe hypothermia. Continue resuscitation until normothermic." },
-  { name: "Thrombosis (cardiac)", detail: "Acute coronary syndrome / massive MI. Consider coronary angiography and PCI. Give aspirin, heparin. Discuss with cardiology." },
-  { name: "Thrombosis (PE)", detail: "Massive pulmonary embolism. Consider systemic thrombolysis (alteplase), surgical embolectomy, or catheter-directed thrombolysis." },
-  { name: "Tension pneumothorax", detail: "Needle decompression (2nd ICS mid-clavicular or 5th ICS mid-axillary line), followed by chest drain. Signs: tracheal deviation, unilateral absent breath sounds, hypoxia." },
-  { name: "Tamponade", detail: "Cardiac tamponade. Perform pericardiocentesis (subxiphoid approach). Consider emergency thoracotomy if traumatic. Signs: muffled heart sounds, distended neck veins, hypotension." },
-  { name: "Toxins", detail: "Drug overdose or poisoning. Identify toxin. Specific antidotes: naloxone (opioids), flumazenil (benzodiazepines), digoxin Fab, lipid emulsion (local anaesthetic). Consult toxbase/poisons centre." },
+  {
+    name: "Hypoxia",
+    detail:
+      "Low oxygen tension. Check airway patency, oxygen supply, ETT position and bilateral chest movement. Ventilate with 100% O₂. Exclude tension pneumothorax.",
+  },
+  {
+    name: "Hypovolaemia",
+    detail:
+      "Circulatory volume depletion. Identify blood loss, sepsis, anaphylaxis. Give IV fluid bolus (20 mL/kg crystalloid). Consider blood products. Control bleeding source.",
+  },
+  {
+    name: "Hypo/hyperkalaemia",
+    detail:
+      "Check ABG/VBG for potassium. Hyperkalaemia (>6.5): calcium chloride 10 mmol IV, insulin-dextrose, bicarbonate. Hypokalaemia: IV potassium replacement.",
+  },
+  {
+    name: "Hypothermia",
+    detail:
+      "Core temperature <35°C. Warm IV fluids, forced-air warmer, cardiopulmonary bypass for severe hypothermia. Continue resuscitation until normothermic.",
+  },
+  {
+    name: "Thrombosis (cardiac)",
+    detail:
+      "Acute coronary syndrome / massive MI. Consider coronary angiography and PCI. Give aspirin, heparin. Discuss with cardiology.",
+  },
+  {
+    name: "Thrombosis (PE)",
+    detail:
+      "Massive pulmonary embolism. Consider systemic thrombolysis (alteplase), surgical embolectomy, or catheter-directed thrombolysis.",
+  },
+  {
+    name: "Tension pneumothorax",
+    detail:
+      "Needle decompression (2nd ICS mid-clavicular or 5th ICS mid-axillary line), followed by chest drain. Signs: tracheal deviation, unilateral absent breath sounds, hypoxia.",
+  },
+  {
+    name: "Tamponade",
+    detail:
+      "Cardiac tamponade. Perform pericardiocentesis (subxiphoid approach). Consider emergency thoracotomy if traumatic. Signs: muffled heart sounds, distended neck veins, hypotension.",
+  },
+  {
+    name: "Toxins",
+    detail:
+      "Drug overdose or poisoning. Identify toxin. Specific antidotes: naloxone (opioids), flumazenil (benzodiazepines), digoxin Fab, lipid emulsion (local anaesthetic). Consult toxbase/poisons centre.",
+  },
 ];

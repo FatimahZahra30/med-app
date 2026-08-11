@@ -1,20 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-
 import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { theme } from "@/constants/theme";
 
 import ScreenHeader from "@/components/ScreenHeader";
-import ArrestTimer from "@/components/arrest/ArrestTimer";
 import ArrestCard from "@/components/arrest/ArrestCard";
-import AdrenalineTimer from "@/components/arrest/AdrenalineTimer";
+import ArrestTimer from "@/components/arrest/ArrestTimer";
 
 import { arrestFlow } from "@/data/cardiacArrest";
 
@@ -26,41 +23,32 @@ export default function CardiacArrestScreen() {
   const [started, setStarted] = useState(false);
   const [running, setRunning] = useState(false);
 
-  const [rhythmRemaining, setRhythmRemaining] =
-    useState(120);
+  const [rhythmRemaining, setRhythmRemaining] = useState(120);
+  const [rhythmRunning, setRhythmRunning] = useState(false);
 
-  const [rhythmRunning, setRhythmRunning] =
-    useState(false);
-  
   const [adrenalineGiven, setAdrenalineGiven] = useState(false);
+  const [shockDelivered, setShockDelivered] = useState(false);
   const [adrenalineRemaining, setAdrenalineRemaining] = useState(180);
   const [adrenalineRunning, setAdrenalineRunning] = useState(false);
 
-  const [currentNodeId, setCurrentNodeId] =
-    useState("start");
+  const [currentNodeId, setCurrentNodeId] = useState("start");
 
-  const [checkedSteps, setCheckedSteps] =
-    useState<string[]>([]);
-
+  const [checkedSteps, setCheckedSteps] = useState<string[]>([]);
 
   const currentNode = arrestFlow[currentNodeId];
-
 
   // TOTAL ARREST TIMER
   useEffect(() => {
     if (!running) return;
 
     const interval = setInterval(() => {
-      setElapsed(prev => prev + 1);
-    },1000);
+      setElapsed((prev) => prev + 1);
+    }, 1000);
 
     return () => clearInterval(interval);
+  }, [running]);
 
-  },[running]);
-
-
-
-  // 2 MIN CPR COUNTDOWN
+  // CPR RHYTHM COUNTDOWN
   useEffect(() => {
     if (!rhythmRunning) return;
 
@@ -70,144 +58,122 @@ export default function CardiacArrestScreen() {
     }
 
     const interval = setInterval(() => {
-      setRhythmRemaining(prev => prev - 1);
-    },1000);
-
+      setRhythmRemaining((prev) => prev - 1);
+    }, 1000);
 
     return () => clearInterval(interval);
+  }, [rhythmRunning, rhythmRemaining]);
 
-  },[
-    rhythmRunning,
-    rhythmRemaining
-  ]);
+  // ADRENALINE 3 MINUTE COUNTDOWN
+  useEffect(() => {
+    if (!adrenalineRunning) return;
 
-  // 3 MIN ADRENALINE COUNTDOWN
-useEffect(() => {
-  if (!adrenalineRunning) return;
+    if (adrenalineRemaining <= 0) {
+      setAdrenalineRunning(false);
+      return;
+    }
 
-  if (adrenalineRemaining <= 0) {
-    setAdrenalineRunning(false);
-    return;
-  }
+    const interval = setInterval(() => {
+      setAdrenalineRemaining((prev) => prev - 1);
+    }, 1000);
 
-  const interval = setInterval(() => {
-    setAdrenalineRemaining(prev => prev - 1);
-  }, 1000);
+    return () => clearInterval(interval);
+  }, [adrenalineRunning, adrenalineRemaining]);
 
-  return () => clearInterval(interval);
-}, [adrenalineRunning, adrenalineRemaining]);
-
-
-
-  const startRhythmTimer = () => {
-    setRhythmRemaining(120);
+  const startRhythmTimer = (duration = 120) => {
+    setRhythmRemaining(duration);
     setRhythmRunning(true);
   };
 
-
-
   const toggleTimer = () => {
-    setRunning(prev => !prev);
+    setRunning((prev) => !prev);
   };
 
-
-
   const toggleRhythmTimer = () => {
-    setRhythmRunning(prev => !prev);
+    setRhythmRunning((prev) => !prev);
   };
 
   const handleAction = (action: string) => {
-    if (action === "Prepare adrenaline (1 mg IV)") {
+    const lowerAction = action.toLowerCase();
+
+    // ⚡ SHOCK
+    if (lowerAction.includes("shock")) {
+      setShockDelivered(true);
+
+      // Later: add shock to log
+      return;
+    }
+
+    // 💉 ADRENALINE
+    if (lowerAction.includes("adrenaline")) {
+      if (adrenalineGiven) return;
+
       setAdrenalineGiven(true);
       setAdrenalineRemaining(180);
       setAdrenalineRunning(true);
+
+      // Later: add adrenaline to log
+      return;
     }
   };
 
-  const toggleStep = (step:string) => {
-    setCheckedSteps(prev =>
+  const toggleStep = (step: string) => {
+    setCheckedSteps((prev) =>
       prev.includes(step)
-        ? prev.filter(item => item !== step)
-        : [...prev,step]
+        ? prev.filter((item) => item !== step)
+        : [...prev, step],
     );
   };
 
-
-
   const handleYes = () => {
-
     if (!currentNode.yes) return;
 
-
     if (currentNodeId === "start") {
       setStarted(true);
       setRunning(true);
     }
 
+    const nextNodeId = currentNode.yes;
+    const nextNode = arrestFlow[nextNodeId];
 
-    // START CPR COUNTDOWN WHEN ENTERING CPR CYCLE
-    if (
-      currentNode.yes === "shock1" ||
-      currentNode.yes === "shock2" ||
-      currentNode.yes === "cpr1" ||
-      currentNode.yes === "cpr2" ||
-      currentNode.yes === "nonshockable" ||
-      currentNode.yes === "peaCpr"
-    ) {
-      startRhythmTimer();
+    if (nextNode.timer && nextNode.timerDuration) {
+      startRhythmTimer(nextNode.timerDuration);
     }
 
-
-
     setCheckedSteps([]);
-
-    setCurrentNodeId(currentNode.yes);
-
+    setCurrentNodeId(nextNodeId);
 
     scrollRef.current?.scrollTo({
-      y:0,
-      animated:true,
+      y: 0,
+      animated: true,
     });
-
   };
-
-
 
   const handleNo = () => {
-
     if (!currentNode.no) return;
-
 
     if (currentNodeId === "start") {
       setStarted(true);
       setRunning(true);
     }
 
+    const nextNodeId = currentNode.no;
+    const nextNode = arrestFlow[nextNodeId];
 
-    if (
-      currentNode.no === "nonshockable"
-    ) {
-      startRhythmTimer();
+    if (nextNode.timer && nextNode.timerDuration) {
+      startRhythmTimer(nextNode.timerDuration);
     }
 
-
-
     setCheckedSteps([]);
-
-    setCurrentNodeId(currentNode.no);
-
+    setCurrentNodeId(nextNodeId);
 
     scrollRef.current?.scrollTo({
-      y:0,
-      animated:true,
+      y: 0,
+      animated: true,
     });
-
   };
 
-
-
   const handleReset = () => {
-
     setElapsed(0);
 
     setStarted(false);
@@ -219,37 +185,24 @@ useEffect(() => {
     setAdrenalineGiven(false);
     setAdrenalineRemaining(180);
     setAdrenalineRunning(false);
+    setShockDelivered(false);
 
     setCheckedSteps([]);
 
     setCurrentNodeId("start");
 
-
     scrollRef.current?.scrollTo({
-      y:0,
-      animated:true,
+      y: 0,
+      animated: true,
     });
-
   };
 
-
-
   return (
-
-    <SafeAreaView
-      style={styles.container}
-      edges={["top"]}
-    >
-
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <KeyboardAvoidingView
-        style={{flex:1}}
-        behavior={
-          Platform.OS === "ios"
-          ?"padding"
-          :undefined
-        }
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-
         <ScrollView
           ref={scrollRef}
           showsVerticalScrollIndicator={false}
@@ -257,19 +210,12 @@ useEffect(() => {
           keyboardDismissMode="on-drag"
           contentContainerStyle={styles.content}
         >
-
-
           <ScreenHeader
             title="Cardiac Arrest Algorithm"
             subtitle="ALS Protocol · Interactive Walkthrough"
-            gradient={[
-              "#DC2626",
-              "#EF4444",
-            ]}
+            gradient={["#DC2626", "#EF4444"]}
             titleSize={20}
           />
-
-
 
           <ArrestTimer
             elapsed={elapsed}
@@ -278,57 +224,38 @@ useEffect(() => {
             onToggle={toggleTimer}
           />
 
-
-
           <ArrestCard
-          node={currentNode}
-          checkedSteps={checkedSteps}
-          onToggleStep={toggleStep}
-          onAction={handleAction}
-          adrenalineGiven={adrenalineGiven}
-          adrenalineRemaining={adrenalineRemaining}
-          adrenalineRunning={adrenalineRunning}
-          onYes={handleYes}
-          onNo={handleNo}
-          onReset={handleReset}
-          showRhythmTimer={
-            started && currentNode.timer === true
-          }
-          rhythmRemaining={rhythmRemaining}
-          rhythmRunning={rhythmRunning}
-          onToggleRhythm={toggleRhythmTimer}
-        />
-
-
+            node={currentNode}
+            checkedSteps={checkedSteps}
+            onToggleStep={toggleStep}
+            onAction={handleAction}
+            adrenalineGiven={adrenalineGiven}
+            adrenalineRemaining={adrenalineRemaining}
+            adrenalineRunning={adrenalineRunning}
+            shockDelivered={shockDelivered}
+            onYes={handleYes}
+            onNo={handleNo}
+            onReset={handleReset}
+            showRhythmTimer={started && currentNode.timer === true}
+            rhythmRemaining={rhythmRemaining}
+            rhythmRunning={rhythmRunning}
+            onToggleRhythm={toggleRhythmTimer}
+          />
         </ScrollView>
-
       </KeyboardAvoidingView>
-
     </SafeAreaView>
-
   );
 }
 
-
-
 const styles = StyleSheet.create({
-
-  container:{
-    flex:1,
-    backgroundColor:
-      theme.colors.background,
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
   },
-
-  content:{
-    paddingHorizontal:
-      theme.spacing.lg,
-
-    paddingTop:
-      theme.spacing.md,
-
-    paddingBottom:120,
-
-    gap:18,
+  content: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.md,
+    paddingBottom: 120,
+    gap: 18,
   },
-
 });
