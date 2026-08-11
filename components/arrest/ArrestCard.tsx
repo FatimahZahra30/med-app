@@ -130,7 +130,8 @@ export default function ArrestCard({
                         <Text
                           style={[
                             styles.actionLabel,
-                            given && styles.actionLabelGiven,
+                            isShock && styles.shockLabelGiven,
+                            given && !isShock && styles.actionLabelGiven,
                           ]}
                         >
                           {given
@@ -145,14 +146,21 @@ export default function ArrestCard({
                         <Text
                           style={[
                             styles.actionText,
-                            given && styles.actionTextGiven,
+                            isShock && styles.shockText,
+                            given && !isShock && styles.actionTextGiven,
+                            given && isShock && styles.shockTextGiven,
                           ]}
                         >
                           {isShock ? "200 J biphasic" : "1 mg IV"}
                         </Text>
 
                         {!given && (
-                          <Text style={styles.actionHint}>
+                          <Text
+                            style={[
+                              styles.actionHint,
+                              isShock && styles.shockHint,
+                            ]}
+                          >
                             {isShock
                               ? "Tap when shock delivered"
                               : "Tap when given"}
@@ -330,13 +338,13 @@ const styles = StyleSheet.create({
   },
 
   shockActionCard: {
-    backgroundColor: "#FFF1F2",
+    backgroundColor: "#f8d7d9",
     borderColor: "#f06d7c",
   },
 
   shockActionCardGiven: {
     backgroundColor: "#FEF2F2",
-    borderColor: "#F87171",
+    borderColor: "#fabcbc",
   },
 
   adrenalineActionCardGiven: {
@@ -382,11 +390,23 @@ const styles = StyleSheet.create({
   },
 
   shockLabel: {
-    color: "#991B1B",
+    color: "#c53535",
+  },
+
+  shockLabelGiven: {
+    color: "#c53535",
   },
 
   actionLabelGiven: {
     color: "#92400E",
+  },
+
+  shockText: {
+    color: "#c53535",
+  },
+
+  shockTextGiven: {
+    color: "#c53535",
   },
 
   actionText: {
@@ -411,6 +431,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
 
     color: "#92400E",
+  },
+
+  shockHint: {
+    color: "#c53535",
   },
 
   actionCardGiven: {
