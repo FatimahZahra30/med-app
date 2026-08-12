@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { HeartPulse, RotateCcw } from "lucide-react-native";
+import { ChevronLeft, HeartPulse, RotateCcw } from "lucide-react-native";
 
 import { theme } from "@/constants/theme";
 import { ArrestNode } from "@/types/cardiacArrest";
@@ -66,6 +66,11 @@ export default function ArrestCard({
   const [expandedCause, setExpandedCause] = useState<string | null>(null);
   return (
     <>
+      <Pressable style={styles.backButton}>
+        <ChevronLeft size={16} color={theme.colors.mutedForeground} />
+        <Text style={styles.backText}>Back</Text>
+      </Pressable>
+
       <View style={styles.card}>
         {/* HEADER */}
         <View
@@ -567,5 +572,19 @@ const styles = StyleSheet.create({
 
   reversibleList: {
     gap: 8,
+  },
+
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    paddingVertical: 2,
+    marginBottom: -10,
+  },
+
+  backText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: theme.colors.mutedForeground,
   },
 });
