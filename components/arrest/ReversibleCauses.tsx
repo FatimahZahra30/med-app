@@ -1,5 +1,4 @@
 import { ChevronDown, ChevronUp } from "lucide-react-native";
-import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { theme } from "@/constants/theme";
@@ -7,15 +6,19 @@ import { theme } from "@/constants/theme";
 type Props = {
   title: string;
   description: string;
+  expanded: boolean;
+  onPress: () => void;
 };
 
-export default function ReversibleDropdown({ title, description }: Props) {
-  const [expanded, setExpanded] = useState(false);
-
+export default function ReversibleDropdown({
+  title,
+  description,
+  expanded,
+  onPress,
+}: Props) {
   return (
-    <View style={styles.container}>
-      {/* DROPDOWN HEADER */}
-      <Pressable style={styles.header} onPress={() => setExpanded(!expanded)}>
+    <View style={styles.dropdown}>
+      <Pressable style={styles.header} onPress={onPress}>
         <Text style={styles.title}>{title}</Text>
 
         {expanded ? (
@@ -25,7 +28,6 @@ export default function ReversibleDropdown({ title, description }: Props) {
         )}
       </Pressable>
 
-      {/* DESCRIPTION */}
       {expanded && (
         <View style={styles.descriptionContainer}>
           <Text style={styles.description}>{description}</Text>
@@ -36,11 +38,11 @@ export default function ReversibleDropdown({ title, description }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  dropdown: {
     backgroundColor: theme.colors.card,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: "#dedae1",
     overflow: "hidden",
   },
 
@@ -53,9 +55,10 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    flex: 1,
     fontSize: 15,
     fontWeight: "700",
-    color: theme.colors.foreground,
+    color: "#7d51a0",
   },
 
   descriptionContainer: {

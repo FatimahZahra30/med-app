@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { HeartPulse, RotateCcw } from "lucide-react-native";
@@ -6,7 +7,9 @@ import { theme } from "@/constants/theme";
 import { ArrestNode } from "@/types/cardiacArrest";
 
 import AdrenalineTimer from "@/components/arrest/AdrenalineTimer";
+import ReversibleDropdown from "@/components/arrest/ReversibleCauses";
 import RhythmCountdown from "@/components/arrest/RythmCountdown";
+import { REVERSIBLE } from "@/data/cardiacArrest";
 
 type Props = {
   node: ArrestNode;
@@ -60,6 +63,7 @@ export default function ArrestCard({
   rhythmRunning,
   onToggleRhythm,
 }: Props) {
+  const [expandedCause, setExpandedCause] = useState<string | null>(null);
   return (
     <>
       <View style={styles.card}>
@@ -187,6 +191,31 @@ export default function ArrestCard({
         {adrenalineGiven && (
           <View style={styles.adrTimer}>
             <AdrenalineTimer remaining={adrenalineRemaining} />
+          </View>
+        )}
+
+        {/* REVERSIBLE CAUSES */}
+        {node.title === "CPR & Reversible Causes" && (
+          <View style={styles.reversibleContainer}>
+            <View style={styles.reversibleHeader}>
+              <Text style={styles.reversibleTitle}>Reversible Causes</Text>
+            </View>
+
+            <View style={styles.reversibleList}>
+              {REVERSIBLE.map((cause) => (
+                <ReversibleDropdown
+                  key={cause.name}
+                  title={cause.name}
+                  description={cause.detail}
+                  expanded={expandedCause === cause.name}
+                  onPress={() =>
+                    setExpandedCause(
+                      expandedCause === cause.name ? null : cause.name,
+                    )
+                  }
+                />
+              ))}
+            </View>
           </View>
         )}
 
@@ -511,5 +540,32 @@ const styles = StyleSheet.create({
     fontWeight: "700",
 
     color: theme.colors.mutedForeground,
+  },
+
+  reversibleCauses: {
+    marginTop: theme.spacing.lg,
+  },
+
+  reversibleContainer: {
+    marginTop: 20,
+    padding: 16,
+    borderRadius: 18,
+    backgroundColor: "#f2ecf8",
+    borderWidth: 1,
+    borderColor: "#be9ad9",
+  },
+
+  reversibleHeader: {
+    marginBottom: 12,
+  },
+
+  reversibleTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#923dd2",
+  },
+
+  reversibleList: {
+    gap: 8,
   },
 });
