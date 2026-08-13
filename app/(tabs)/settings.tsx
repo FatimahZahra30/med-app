@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 
-export default function LogsScreen() {
+export default function SettingsScreen() {
   return (
     <View>
-      <Text>Logs</Text>
+      <Text>Settings</Text>
     </View>
   );
 }
