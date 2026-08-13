@@ -7,7 +7,6 @@ export default function TabLayout() {
         headerShown: false,
       }}
     >
-
       <Tabs.Screen
         name="index"
         options={{
@@ -16,12 +15,25 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="dosageCalc"
+        name="reference"
         options={{
-          title: "Calculator",
+          title: "Reference",
         }}
       />
 
+      <Tabs.Screen
+        name="logs"
+        options={{
+          title: "Logs",
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+        }}
+      />
     </Tabs>
   );
 }

@@ -55,7 +55,7 @@ export default function HomeScreen() {
             ]}
             icon={Syringe}
             accentColor="#4F46E5"
-            onPress={() => router.push("/(tabs)/dosageCalc")}
+            onPress={() => router.push("/dosageCalc")}
           />
 
           <FeatureCard
@@ -69,7 +69,7 @@ export default function HomeScreen() {
             accentColor="#DC2626"
             onPress={() =>
               router.push({
-                pathname: "/(tabs)/arrest",
+                pathname: "/arrest",
                 params: { newSession: Date.now().toString() },
               })
             }
@@ -86,7 +86,7 @@ export default function HomeScreen() {
             ]}
             icon={Ruler}
             accentColor="#0891B2"
-            onPress={() => router.push("/(tabs)/airwaySize")}
+            onPress={() => router.push("/airwaySize")}
           />
 
           <FeatureCard
@@ -98,7 +98,7 @@ export default function HomeScreen() {
             ]}
             icon={Wind}
             accentColor="#059669"
-            onPress={() => router.push("/(tabs)/difficult")}
+            onPress={() => router.push("/difficult")}
           />
         </View>
 
@@ -112,7 +112,7 @@ export default function HomeScreen() {
             ]}
             icon={Siren}
             accentColor="#DB2777"
-            onPress={() => router.push("/(tabs)/emergencies")}
+            onPress={() => router.push("/emergencies")}
           />
 
           <FeatureCard
@@ -124,7 +124,7 @@ export default function HomeScreen() {
             ]}
             icon={Pill}
             accentColor="#D97706"
-            onPress={() => router.push("/(tabs)/anticoag")}
+            onPress={() => router.push("/anticoag")}
           />
         </View>
       </ScrollView>
