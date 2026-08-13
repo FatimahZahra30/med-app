@@ -21,6 +21,18 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
+        <Stack.Screen name="dosageCalc" options={{ headerShown: false }} />
+
+        <Stack.Screen name="arrest" options={{ headerShown: false }} />
+
+        <Stack.Screen name="airwaySize" options={{ headerShown: false }} />
+
+        <Stack.Screen name="difficult" options={{ headerShown: false }} />
+
+        <Stack.Screen name="emergencies" options={{ headerShown: false }} />
+
+        <Stack.Screen name="anticoag" options={{ headerShown: false }} />
+
         <Stack.Screen
           name="modal"
           options={{

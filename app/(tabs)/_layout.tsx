@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import { BookOpen, Home, ScrollText, Settings } from "lucide-react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function TabLayout() {
   return (
@@ -12,11 +13,12 @@ export default function TabLayout() {
 
         tabBarLabelStyle: {
           fontSize: 11,
+          marginTop: 4,
           fontWeight: "600",
         },
 
         tabBarStyle: {
-          height: 68,
+          height: 78,
           paddingTop: 6,
           paddingBottom: 8,
         },
@@ -29,7 +31,11 @@ export default function TabLayout() {
         options={{
           title: "Home",
 
-          tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.activeIcon : styles.inactiveIcon}>
+              <Home size={20} color={color} />
+            </View>
+          ),
         }}
       />
 
@@ -40,8 +46,10 @@ export default function TabLayout() {
         options={{
           title: "Logs",
 
-          tabBarIcon: ({ color, size }) => (
-            <ScrollText size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.activeIcon : styles.inactiveIcon}>
+              <ScrollText size={20} color={color} />
+            </View>
           ),
         }}
       />
@@ -53,8 +61,10 @@ export default function TabLayout() {
         options={{
           title: "Reference",
 
-          tabBarIcon: ({ color, size }) => (
-            <BookOpen size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.activeIcon : styles.inactiveIcon}>
+              <BookOpen size={20} color={color} />
+            </View>
           ),
         }}
       />
@@ -66,8 +76,10 @@ export default function TabLayout() {
         options={{
           title: "Settings",
 
-          tabBarIcon: ({ color, size }) => (
-            <Settings size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.activeIcon : styles.inactiveIcon}>
+              <Settings size={20} color={color} />
+            </View>
           ),
         }}
       />
@@ -118,3 +130,17 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  activeIcon: {
+    backgroundColor: "#edebf8",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+
+  inactiveIcon: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+  },
+});
