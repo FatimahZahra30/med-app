@@ -67,7 +67,12 @@ export default function HomeScreen() {
             ]}
             icon={Heart}
             accentColor="#DC2626"
-            onPress={() => router.push("/(tabs)/arrest")}
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/arrest",
+                params: { newSession: Date.now().toString() },
+              })
+            }
           />
         </View>
 
@@ -109,7 +114,7 @@ export default function HomeScreen() {
             accentColor="#DB2777"
             onPress={() => router.push("/(tabs)/emergencies")}
           />
-          
+
           <FeatureCard
             title="Anticoagulants & Regional"
             features={[
@@ -118,7 +123,7 @@ export default function HomeScreen() {
               { icon: BookMarked, text: "ASRA Guidelines" },
             ]}
             icon={Pill}
-            accentColor="#D97706" 
+            accentColor="#D97706"
             onPress={() => router.push("/(tabs)/anticoag")}
           />
         </View>
