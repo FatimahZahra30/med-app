@@ -14,8 +14,11 @@ import ArrestCard from "@/components/arrest/ArrestCard";
 import ArrestTimer from "@/components/arrest/ArrestTimer";
 
 import { arrestFlow } from "@/data/cardiacArrest";
+import { useLocalSearchParams } from "expo-router";
 
 export default function CardiacArrestScreen() {
+  const { newSession } = useLocalSearchParams();
+
   const scrollRef = useRef<ScrollView>(null);
 
   const [elapsed, setElapsed] = useState(0);
@@ -38,6 +41,37 @@ export default function CardiacArrestScreen() {
   const [history, setHistory] = useState<string[]>([]);
 
   const currentNode = arrestFlow[currentNodeId];
+
+  const resetSession = () => {
+    setElapsed(0);
+
+    setStarted(false);
+    setRunning(false);
+
+    setRhythmRemaining(120);
+    setRhythmRunning(false);
+
+    setAdrenalineGiven(false);
+    setAdrenalineRemaining(180);
+    setAdrenalineRunning(false);
+
+    setShockDelivered(false);
+
+    setCheckedSteps([]);
+    setHistory([]);
+    setCurrentNodeId("start");
+
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: false,
+    });
+  };
+
+  useEffect(() => {
+    if (newSession) {
+      resetSession();
+    }
+  }, [newSession]);
 
   // TOTAL ARREST TIMER
   useEffect(() => {
@@ -197,30 +231,7 @@ export default function CardiacArrestScreen() {
   };
 
   const handleReset = () => {
-    setElapsed(0);
-
-    setStarted(false);
-    setRunning(false);
-
-    setRhythmRemaining(120);
-    setRhythmRunning(false);
-
-    setAdrenalineGiven(false);
-    setAdrenalineRemaining(180);
-    setAdrenalineRunning(false);
-    setShockDelivered(false);
-
-    setCheckedSteps([]);
-
-    // Clear navigation history too
-    setHistory([]);
-
-    setCurrentNodeId("start");
-
-    scrollRef.current?.scrollTo({
-      y: 0,
-      animated: true,
-    });
+    resetSession();
   };
 
   return (
@@ -263,6 +274,7 @@ export default function CardiacArrestScreen() {
             onNo={handleNo}
             onReset={handleReset}
             onBack={handleBack}
+            showBack={history.length > 0}
             showRhythmTimer={started && currentNode.timer === true}
             rhythmRemaining={rhythmRemaining}
             rhythmRunning={rhythmRunning}

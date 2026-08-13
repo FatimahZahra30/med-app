@@ -30,6 +30,8 @@ type Props = {
   onReset: () => void;
   onBack: () => void;
 
+  showBack: boolean;
+
   showRhythmTimer: boolean;
 
   rhythmRemaining: number;
@@ -60,6 +62,8 @@ export default function ArrestCard({
   onReset,
   onBack,
 
+  showBack,
+
   showRhythmTimer,
   rhythmRemaining,
   rhythmRunning,
@@ -68,10 +72,13 @@ export default function ArrestCard({
   const [expandedCause, setExpandedCause] = useState<string | null>(null);
   return (
     <>
-      <Pressable style={styles.backButton} onPress={onBack}>
-        <ChevronLeft size={19} color={theme.colors.mutedForeground} />
-        <Text style={styles.backText}>Back</Text>
-      </Pressable>
+      {showBack && (
+        <Pressable style={styles.backButton} onPress={onBack}>
+          <ChevronLeft size={16} color={theme.colors.mutedForeground} />
+
+          <Text style={styles.backText}>Back</Text>
+        </Pressable>
+      )}
 
       <View style={styles.card}>
         {/* HEADER */}
