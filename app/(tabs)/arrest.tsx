@@ -35,6 +35,8 @@ export default function CardiacArrestScreen() {
 
   const [checkedSteps, setCheckedSteps] = useState<string[]>([]);
 
+  const [history, setHistory] = useState<string[]>([]);
+
   const currentNode = arrestFlow[currentNodeId];
 
   // TOTAL ARREST TIMER
@@ -133,6 +135,8 @@ export default function CardiacArrestScreen() {
       setRunning(true);
     }
 
+    setHistory((prev) => [...prev, currentNodeId]);
+
     const nextNodeId = currentNode.yes;
     const nextNode = arrestFlow[nextNodeId];
 
@@ -157,6 +161,8 @@ export default function CardiacArrestScreen() {
       setRunning(true);
     }
 
+    setHistory((prev) => [...prev, currentNodeId]);
+
     const nextNodeId = currentNode.no;
     const nextNode = arrestFlow[nextNodeId];
 
@@ -166,6 +172,23 @@ export default function CardiacArrestScreen() {
 
     setCheckedSteps([]);
     setCurrentNodeId(nextNodeId);
+
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  };
+
+  const handleBack = () => {
+    if (history.length === 0) return;
+
+    const previousNodeId = history[history.length - 1];
+
+    setHistory((prev) => prev.slice(0, -1));
+
+    setCurrentNodeId(previousNodeId);
+
+    setCheckedSteps([]);
 
     scrollRef.current?.scrollTo({
       y: 0,
@@ -188,6 +211,9 @@ export default function CardiacArrestScreen() {
     setShockDelivered(false);
 
     setCheckedSteps([]);
+
+    // Clear navigation history too
+    setHistory([]);
 
     setCurrentNodeId("start");
 
@@ -236,6 +262,7 @@ export default function CardiacArrestScreen() {
             onYes={handleYes}
             onNo={handleNo}
             onReset={handleReset}
+            onBack={handleBack}
             showRhythmTimer={started && currentNode.timer === true}
             rhythmRemaining={rhythmRemaining}
             rhythmRunning={rhythmRunning}

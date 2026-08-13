@@ -28,6 +28,7 @@ type Props = {
   onYes: () => void;
   onNo: () => void;
   onReset: () => void;
+  onBack: () => void;
 
   showRhythmTimer: boolean;
 
@@ -57,6 +58,7 @@ export default function ArrestCard({
   onYes,
   onNo,
   onReset,
+  onBack,
 
   showRhythmTimer,
   rhythmRemaining,
@@ -66,8 +68,8 @@ export default function ArrestCard({
   const [expandedCause, setExpandedCause] = useState<string | null>(null);
   return (
     <>
-      <Pressable style={styles.backButton}>
-        <ChevronLeft size={16} color={theme.colors.mutedForeground} />
+      <Pressable style={styles.backButton} onPress={onBack}>
+        <ChevronLeft size={19} color={theme.colors.mutedForeground} />
         <Text style={styles.backText}>Back</Text>
       </Pressable>
 
@@ -583,7 +585,7 @@ const styles = StyleSheet.create({
   },
 
   backText: {
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
     color: theme.colors.mutedForeground,
   },
