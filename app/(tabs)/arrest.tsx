@@ -30,7 +30,8 @@ export default function CardiacArrestScreen() {
   const [rhythmRunning, setRhythmRunning] = useState(false);
 
   const [adrenalineGiven, setAdrenalineGiven] = useState(false);
-  const [shockDelivered, setShockDelivered] = useState(false);
+
+  const [completedActions, setCompletedActions] = useState<string[]>([]);
   const [adrenalineRemaining, setAdrenalineRemaining] = useState(30);
   const [adrenalineRunning, setAdrenalineRunning] = useState(false);
 
@@ -52,10 +53,11 @@ export default function CardiacArrestScreen() {
     setRhythmRunning(false);
 
     setAdrenalineGiven(false);
+
     setAdrenalineRemaining(30);
     setAdrenalineRunning(false);
 
-    setShockDelivered(false);
+    setCompletedActions([]);
 
     setCheckedSteps([]);
     setHistory([]);
@@ -130,25 +132,48 @@ export default function CardiacArrestScreen() {
   };
 
   const handleAction = (action: string) => {
-    const lowerAction = action.toLowerCase();
+  const lowerAction = action.toLowerCase();
 
-    // ⚡ SHOCK
-    if (lowerAction.includes("shock")) {
-      setShockDelivered(true);
+  //SHOCK
+  if (lowerAction.includes("shock")) {
+    const actionKey = `${currentNodeId}-${action}`;
 
-      // Later: add shock to log
-      return;
+    setCompletedActions((prev) => {
+      if (prev.includes(actionKey)) {
+        return prev;
+      }
+
+      return [...prev, actionKey];
+    });
+
+    // Later: add shock to log
+    return;
     }
 
-    // 💉 ADRENALINE
+    //ADRENALINE
     if (lowerAction.includes("adrenaline")) {
-      if (adrenalineGiven) return;
+      // Don't allow another dose while the current timer is running
+      if (adrenalineRunning && adrenalineRemaining > 0) {
+        return;
+      }
 
+      const actionKey = `${currentNodeId}-${action}`;
+
+      setCompletedActions((prev) => {
+        if (prev.includes(actionKey)) {
+          return prev;
+        }
+
+        return [...prev, actionKey];
+      });
+
+      // A dose has now been given
       setAdrenalineGiven(true);
+
+      // Start/restart the countdown
       setAdrenalineRemaining(30);
       setAdrenalineRunning(true);
 
-      // Later: add adrenaline to log
       return;
     }
   };
@@ -266,13 +291,14 @@ export default function CardiacArrestScreen() {
 
           <ArrestCard
             node={currentNode}
+            currentNodeId={currentNodeId}
             checkedSteps={checkedSteps}
             onToggleStep={toggleStep}
             onAction={handleAction}
-            adrenalineGiven={adrenalineGiven}
             adrenalineRemaining={adrenalineRemaining}
             adrenalineRunning={adrenalineRunning}
-            shockDelivered={shockDelivered}
+            adrenalineGiven={adrenalineGiven}
+            completedActions={completedActions}
             onYes={handleYes}
             onNo={handleNo}
             onReset={handleReset}

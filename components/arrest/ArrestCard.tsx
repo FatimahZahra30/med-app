@@ -20,15 +20,17 @@ type Props = {
 
   onAction: (action: string) => void;
 
-  adrenalineGiven: boolean;
   adrenalineRemaining: number;
   adrenalineRunning: boolean;
-  shockDelivered: boolean;
+  completedActions: string[];
+  adrenalineGiven: boolean;
 
   onYes: () => void;
   onNo: () => void;
   onReset: () => void;
   onBack: () => void;
+
+  currentNodeId: string;
 
   showBack: boolean;
 
@@ -52,10 +54,12 @@ export default function ArrestCard({
   onToggleStep,
   onAction,
 
-  adrenalineGiven,
   adrenalineRemaining,
   adrenalineRunning,
-  shockDelivered,
+  completedActions,
+  adrenalineGiven,
+
+  currentNodeId,
 
   onYes,
   onNo,
@@ -104,11 +108,16 @@ export default function ArrestCard({
             <View style={styles.actionSection}>
               {node.actionSteps.map((action) => {
                 const isShock = action.toLowerCase().includes("shock");
-                const isAdrenaline = action
-                  .toLowerCase()
-                  .includes("adrenaline");
+                const isAdrenaline = action.toLowerCase().includes("adrenaline");
 
-                const given = isShock ? shockDelivered : adrenalineGiven;
+                const actionKey = `${currentNodeId}-${action}`;
+
+                const given = completedActions.includes(actionKey);
+
+                const adrenalineBlocked =
+                  isAdrenaline &&
+                  adrenalineRunning &&
+                  adrenalineRemaining > 0;
 
                 return (
                   <Pressable
@@ -201,12 +210,12 @@ export default function ArrestCard({
           />
         )}
 
-        {/* ADRENALINE TIMER */}
+       {/* ADRENALINE TIMER */}
         {adrenalineGiven && (
-          <View style={styles.adrTimer}>
-            <AdrenalineTimer remaining={adrenalineRemaining} />
-          </View>
-        )}
+            <View style={styles.adrTimer}>
+              <AdrenalineTimer remaining={adrenalineRemaining} />
+            </View>
+          )}
 
         {/* REVERSIBLE CAUSES */}
         {node.title === "CPR & Reversible Causes" && (
@@ -346,7 +355,7 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 4,
     backgroundColor: RED.primary,
-    marginTop: 7,
+    marginTop: 9,
   },
 
   /* ACTION SECTION */
