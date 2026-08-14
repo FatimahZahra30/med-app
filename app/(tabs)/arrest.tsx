@@ -31,7 +31,7 @@ export default function CardiacArrestScreen() {
 
   const [adrenalineGiven, setAdrenalineGiven] = useState(false);
   const [shockDelivered, setShockDelivered] = useState(false);
-  const [adrenalineRemaining, setAdrenalineRemaining] = useState(180);
+  const [adrenalineRemaining, setAdrenalineRemaining] = useState(30);
   const [adrenalineRunning, setAdrenalineRunning] = useState(false);
 
   const [currentNodeId, setCurrentNodeId] = useState("start");
@@ -52,7 +52,7 @@ export default function CardiacArrestScreen() {
     setRhythmRunning(false);
 
     setAdrenalineGiven(false);
-    setAdrenalineRemaining(180);
+    setAdrenalineRemaining(30);
     setAdrenalineRunning(false);
 
     setShockDelivered(false);
@@ -145,7 +145,7 @@ export default function CardiacArrestScreen() {
       if (adrenalineGiven) return;
 
       setAdrenalineGiven(true);
-      setAdrenalineRemaining(180);
+      setAdrenalineRemaining(30);
       setAdrenalineRunning(true);
 
       // Later: add adrenaline to log
@@ -161,6 +161,35 @@ export default function CardiacArrestScreen() {
     );
   };
 
+  // chatgpt helped with this timing logic
+  const handleNextNode = (nextNodeId: string) => {
+    const nextNode = arrestFlow[nextNodeId];
+
+    // If the next node needs a rhythm timer:
+    if (nextNode.timer && nextNode.timerDuration) {
+      // Start a new timer if the CURRENT node
+      // does not have a timer running.
+      if (!currentNode.timer || !rhythmRunning) {
+        startRhythmTimer(nextNode.timerDuration);
+      }
+    }
+
+    // If we're moving to a node without a timer,
+    // stop the current rhythm timer.
+    if (!nextNode.timer) {
+      setRhythmRunning(false);
+      setRhythmRemaining(120);
+    }
+
+    setCheckedSteps([]);
+    setCurrentNodeId(nextNodeId);
+
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  };
+
   const handleYes = () => {
     if (!currentNode.yes) return;
 
@@ -171,20 +200,7 @@ export default function CardiacArrestScreen() {
 
     setHistory((prev) => [...prev, currentNodeId]);
 
-    const nextNodeId = currentNode.yes;
-    const nextNode = arrestFlow[nextNodeId];
-
-    if (nextNode.timer && nextNode.timerDuration) {
-      startRhythmTimer(nextNode.timerDuration);
-    }
-
-    setCheckedSteps([]);
-    setCurrentNodeId(nextNodeId);
-
-    scrollRef.current?.scrollTo({
-      y: 0,
-      animated: true,
-    });
+    handleNextNode(currentNode.yes);
   };
 
   const handleNo = () => {
@@ -197,20 +213,7 @@ export default function CardiacArrestScreen() {
 
     setHistory((prev) => [...prev, currentNodeId]);
 
-    const nextNodeId = currentNode.no;
-    const nextNode = arrestFlow[nextNodeId];
-
-    if (nextNode.timer && nextNode.timerDuration) {
-      startRhythmTimer(nextNode.timerDuration);
-    }
-
-    setCheckedSteps([]);
-    setCurrentNodeId(nextNodeId);
-
-    scrollRef.current?.scrollTo({
-      y: 0,
-      animated: true,
-    });
+    handleNextNode(currentNode.no);
   };
 
   const handleBack = () => {

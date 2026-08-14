@@ -241,10 +241,17 @@ export default function ArrestCard({
             </Pressable>
           )}
 
-          {node.yesLabel && (
-            <Pressable style={styles.primaryButton} onPress={onYes}>
-              <Text style={styles.primaryButtonText}>{node.yesLabel}</Text>
+          {node.yesLabel === "Restart algorithm" ? (
+            <Pressable style={styles.primaryButton} onPress={onReset}>
+              <RotateCcw size={18} color="#FFFFFF" />
+              <Text style={styles.primaryButtonText}>Restart Algorithm</Text>
             </Pressable>
+          ) : (
+            node.yesLabel && (
+              <Pressable style={styles.primaryButton} onPress={onYes}>
+                <Text style={styles.primaryButtonText}>{node.yesLabel}</Text>
+              </Pressable>
+            )
           )}
         </View>
       </View>
