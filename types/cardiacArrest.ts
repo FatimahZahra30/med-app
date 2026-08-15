@@ -8,4 +8,20 @@ export interface ArrestNode {
   noLabel?: string | null;
   timer?: boolean;
   timerDuration?: number;
-}
+};
+
+export type ArrestEvent = {
+  id: string;
+  type: "start" | "shock" | "adrenaline" | "rhythm";
+  description: string;
+  elapsedTime: number;
+  timestamp: string;
+  nodeId: string;
+};
+
+export type ArrestLog = {
+  id: string;
+  startedAt: string;
+  duration: number;
+  events: ArrestEvent[];
+};
