@@ -4,12 +4,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { ChevronLeft, HeartPulse, RotateCcw } from "lucide-react-native";
 
 import { theme } from "@/constants/theme";
-import { ArrestNode } from "@/types/cardiacArrest";
+import { ArrestEvent, ArrestNode } from "@/types/cardiacArrest";
 
 import AdrenalineTimer from "@/components/arrest/AdrenalineTimer";
 import ReversibleDropdown from "@/components/arrest/ReversibleCauses";
 import RhythmCountdown from "@/components/arrest/RythmCountdown";
 import { REVERSIBLE } from "@/data/cardiacArrest";
+import ArrestSummaryCard from "./ArrestSummary";
 
 type Props = {
   node: ArrestNode;
@@ -29,6 +30,9 @@ type Props = {
   onNo: () => void;
   onReset: () => void;
   onBack: () => void;
+
+  events: ArrestEvent[];
+  duration: number;
 
   currentNodeId: string;
 
@@ -53,12 +57,13 @@ export default function ArrestCard({
   checkedSteps,
   onToggleStep,
   onAction,
+  events,
+  duration,
 
   adrenalineRemaining,
   adrenalineRunning,
   completedActions,
   adrenalineGiven,
-  
 
   currentNodeId,
 
@@ -109,14 +114,14 @@ export default function ArrestCard({
             <View style={styles.actionSection}>
               {node.actionSteps.map((action) => {
                 const isShock = action.toLowerCase().includes("shock");
-                const isAdrenaline = action.toLowerCase().includes("adrenaline");
+                const isAdrenaline = action
+                  .toLowerCase()
+                  .includes("adrenaline");
 
                 const actionKey = `${currentNodeId}-${action}`;
 
                 const adrenalineBlocked =
-                  isAdrenaline &&
-                  adrenalineRunning &&
-                  adrenalineRemaining > 0;
+                  isAdrenaline && adrenalineRunning && adrenalineRemaining > 0;
 
                 const given = isAdrenaline
                   ? adrenalineBlocked
@@ -215,12 +220,12 @@ export default function ArrestCard({
           />
         )}
 
-       {/* ADRENALINE TIMER */}
-        {adrenalineGiven && (
-            <View style={styles.adrTimer}>
-              <AdrenalineTimer remaining={adrenalineRemaining} />
-            </View>
-          )}
+        {/* ADRENALINE TIMER */}
+        {adrenalineGiven && currentNodeId !== "end" && (
+          <View style={styles.adrTimer}>
+            <AdrenalineTimer remaining={adrenalineRemaining} />
+          </View>
+        )}
 
         {/* REVERSIBLE CAUSES */}
         {node.title === "CPR & Reversible Causes" && (
@@ -247,6 +252,16 @@ export default function ArrestCard({
           </View>
         )}
 
+        {/* ARREST SUMMARY — ONLY ON FINAL NODE */}
+        {currentNodeId === "end" && (
+          <ArrestSummaryCard
+            events={events}
+            duration={duration}
+            onSave={() => console.log("SAVE")}
+            onDiscard={() => console.log("DISCARD")}
+          />
+        )}
+
         {/* NAVIGATION BUTTONS */}
         <View style={styles.buttonRow}>
           {node.noLabel && (
@@ -271,11 +286,13 @@ export default function ArrestCard({
       </View>
 
       {/* RESET */}
-      <Pressable style={styles.resetButton} onPress={onReset}>
-        <RotateCcw size={18} color={theme.colors.mutedForeground} />
+      {currentNodeId !== "end" && (
+        <Pressable style={styles.resetButton} onPress={onReset}>
+          <RotateCcw size={18} color={theme.colors.mutedForeground} />
 
-        <Text style={styles.resetText}>Restart Algorithm</Text>
-      </Pressable>
+          <Text style={styles.resetText}>Restart Algorithm</Text>
+        </Pressable>
+      )}
     </>
   );
 }

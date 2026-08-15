@@ -8,11 +8,11 @@ export interface ArrestNode {
   noLabel?: string | null;
   timer?: boolean;
   timerDuration?: number;
-};
+}
 
 export type ArrestEvent = {
   id: string;
-  type: "start" | "shock" | "adrenaline" | "rhythm";
+  type: "start" | "shock" | "adrenaline" | "rhythm" | "rosc";
   description: string;
   elapsedTime: number;
   timestamp: string;

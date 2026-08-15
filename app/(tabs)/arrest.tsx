@@ -7,11 +7,14 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { initialiseDatabase } from "@/database/arrestDB";
+
 import { theme } from "@/constants/theme";
 
 import ScreenHeader from "@/components/ScreenHeader";
 import ArrestCard from "@/components/arrest/ArrestCard";
 import ArrestTimer from "@/components/arrest/ArrestTimer";
+import { ArrestEvent } from "@/types/cardiacArrest";
 
 import { arrestFlow } from "@/data/cardiacArrest";
 import { useLocalSearchParams } from "expo-router";
@@ -22,6 +25,7 @@ export default function CardiacArrestScreen() {
   const scrollRef = useRef<ScrollView>(null);
 
   const [elapsed, setElapsed] = useState(0);
+  const [events, setEvents] = useState<ArrestEvent[]>([]);
 
   const [started, setStarted] = useState(false);
   const [running, setRunning] = useState(false);
@@ -61,6 +65,7 @@ export default function CardiacArrestScreen() {
 
     setCheckedSteps([]);
     setHistory([]);
+    setEvents([]);
     setCurrentNodeId("start");
 
     scrollRef.current?.scrollTo({
@@ -74,6 +79,10 @@ export default function CardiacArrestScreen() {
       resetSession();
     }
   }, [newSession]);
+
+  useEffect(() => {
+    initialiseDatabase();
+  }, []);
 
   // TOTAL ARREST TIMER
   useEffect(() => {
@@ -118,6 +127,10 @@ export default function CardiacArrestScreen() {
     return () => clearInterval(interval);
   }, [adrenalineRunning, adrenalineRemaining]);
 
+  useEffect(() => {
+    console.log("EVENTS:", events);
+  }, [events]);
+
   const startRhythmTimer = (duration = 120) => {
     setRhythmRemaining(duration);
     setRhythmRunning(true);
@@ -131,41 +144,57 @@ export default function CardiacArrestScreen() {
     setRhythmRunning((prev) => !prev);
   };
 
+  const stopAllTimers = () => {
+    setRunning(false);
+    setRhythmRunning(false);
+    setAdrenalineRunning(false);
+  };
+
+  const addEvent = (
+    type: ArrestEvent["type"],
+    description: string,
+    nodeId: string = currentNodeId,
+  ) => {
+    const event: ArrestEvent = {
+      id: `${Date.now()}-${Math.random()}`,
+      type,
+      description,
+      elapsedTime: elapsed,
+      timestamp: new Date().toISOString(),
+      nodeId,
+    };
+
+    setEvents((prev) => [...prev, event]);
+  };
+
   const handleAction = (action: string) => {
-  const lowerAction = action.toLowerCase();
+    const lowerAction = action.toLowerCase();
 
-  //SHOCK
-  if (lowerAction.includes("shock")) {
-    const actionKey = `${currentNodeId}-${action}`;
+    // SHOCK
+    if (lowerAction.includes("shock")) {
+      const actionKey = `${currentNodeId}-${action}`;
 
-    setCompletedActions((prev) => {
-      if (prev.includes(actionKey)) {
-        return prev;
+      // Don't record the same shock twice
+      if (completedActions.includes(actionKey)) {
+        return;
       }
 
-      return [...prev, actionKey];
-    });
+      setCompletedActions((prev) => [...prev, actionKey]);
 
-    // Later: add shock to log
-    return;
+      addEvent("shock", "Shock delivered — 200 J biphasic");
+
+      return;
     }
 
-    //ADRENALINE
+    // ADRENALINE
     if (lowerAction.includes("adrenaline")) {
       // Don't allow another dose while the current timer is running
       if (adrenalineRunning && adrenalineRemaining > 0) {
         return;
       }
 
-      const actionKey = `${currentNodeId}-${action}`;
-
-      setCompletedActions((prev) => {
-        if (prev.includes(actionKey)) {
-          return prev;
-        }
-
-        return [...prev, actionKey];
-      });
+      // Record the adrenaline event
+      addEvent("adrenaline", "Adrenaline given — 1 mg IV");
 
       // A dose has now been given
       setAdrenalineGiven(true);
@@ -221,6 +250,18 @@ export default function CardiacArrestScreen() {
     if (currentNodeId === "start") {
       setStarted(true);
       setRunning(true);
+      addEvent("start", "Cardiac arrest algorithm started", "start");
+    }
+
+    // Rhythm assessment
+    if (currentNodeId === "rhythm" || currentNodeId === "rhythm2") {
+      addEvent("rhythm", "Rhythm assessed — Shockable", currentNodeId);
+    }
+
+    if (currentNodeId === "rosc") {
+      stopAllTimers();
+
+      addEvent("rhythm", "ROSC achieved", "rosc");
     }
 
     setHistory((prev) => [...prev, currentNodeId]);
@@ -234,6 +275,12 @@ export default function CardiacArrestScreen() {
     if (currentNodeId === "start") {
       setStarted(true);
       setRunning(true);
+      addEvent("start", "Cardiac arrest algorithm started", "start");
+    }
+
+    // Rhythm assessment
+    if (currentNodeId === "rhythm" || currentNodeId === "rhythm2") {
+      addEvent("rhythm", "Rhythm assessed — Shockable", currentNodeId);
     }
 
     setHistory((prev) => [...prev, currentNodeId]);
@@ -295,6 +342,8 @@ export default function CardiacArrestScreen() {
             checkedSteps={checkedSteps}
             onToggleStep={toggleStep}
             onAction={handleAction}
+            events={events}
+            duration={elapsed}
             adrenalineRemaining={adrenalineRemaining}
             adrenalineRunning={adrenalineRunning}
             adrenalineGiven={adrenalineGiven}
