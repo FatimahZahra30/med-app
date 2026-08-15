@@ -58,6 +58,7 @@ export default function ArrestCard({
   adrenalineRunning,
   completedActions,
   adrenalineGiven,
+  
 
   currentNodeId,
 
@@ -112,12 +113,16 @@ export default function ArrestCard({
 
                 const actionKey = `${currentNodeId}-${action}`;
 
-                const given = completedActions.includes(actionKey);
-
                 const adrenalineBlocked =
                   isAdrenaline &&
                   adrenalineRunning &&
                   adrenalineRemaining > 0;
+
+                const given = isAdrenaline
+                  ? adrenalineBlocked
+                    ? true
+                    : false
+                  : completedActions.includes(actionKey);
 
                 return (
                   <Pressable
