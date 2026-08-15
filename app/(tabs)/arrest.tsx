@@ -8,6 +8,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { initialiseDatabase } from "@/database/arrestDB";
+import { saveArrestLog } from "@/database/arrestLogs";
 
 import { theme } from "@/constants/theme";
 
@@ -21,6 +22,8 @@ import { useLocalSearchParams } from "expo-router";
 
 export default function CardiacArrestScreen() {
   const { newSession } = useLocalSearchParams();
+
+  const [startedAt, setStartedAt] = useState<string | null>(null);
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -56,6 +59,8 @@ export default function CardiacArrestScreen() {
     setRhythmRemaining(120);
     setRhythmRunning(false);
 
+    setStartedAt(null);
+
     setAdrenalineGiven(false);
 
     setAdrenalineRemaining(30);
@@ -83,6 +88,22 @@ export default function CardiacArrestScreen() {
   useEffect(() => {
     initialiseDatabase();
   }, []);
+
+  useEffect(() => {
+    if (currentNodeId === "end" && startedAt) {
+      const log = {
+        id: `${Date.now()}`,
+        startedAt,
+        completedAt: new Date().toISOString(),
+        duration: elapsed,
+        events,
+      };
+
+      console.log("SAVING ARREST LOG:", log);
+
+      saveArrestLog(log);
+    }
+  }, [currentNodeId]);
 
   // TOTAL ARREST TIMER
   useEffect(() => {
@@ -248,8 +269,11 @@ export default function CardiacArrestScreen() {
     if (!currentNode.yes) return;
 
     if (currentNodeId === "start") {
+      const startTime = new Date().toISOString();
+
       setStarted(true);
       setRunning(true);
+      setStartedAt(startTime);
       addEvent("start", "Cardiac arrest algorithm started", "start");
     }
 
@@ -273,8 +297,11 @@ export default function CardiacArrestScreen() {
     if (!currentNode.no) return;
 
     if (currentNodeId === "start") {
+      const startTime = new Date().toISOString();
+
       setStarted(true);
       setRunning(true);
+      setStartedAt(startTime);
       addEvent("start", "Cardiac arrest algorithm started", "start");
     }
 
