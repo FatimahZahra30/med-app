@@ -118,7 +118,6 @@ export default function RhythmCountdown({
       <Text style={[styles.time, isFinished && styles.timeFinished]}>
         {minutes}:{seconds.toString().padStart(2, "0")}
       </Text>
-      // UI change based on the end of the timer
       {isFinished && (
         <Text style={styles.labelFinished}>TIME FOR RHYTHM CHECK</Text>
       )}

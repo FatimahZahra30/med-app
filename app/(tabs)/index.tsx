@@ -44,7 +44,6 @@ export default function HomeScreen() {
           subtitle="Clinical Reference & Decision Support"
         />
         <SectionTitle title="Quick Access" />
-        // Feature card for each tool
         <View style={styles.cardRow}>
           <FeatureCard
             title="Drug Calculator"
