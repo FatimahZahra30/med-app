@@ -35,6 +35,7 @@ export default function DrugCalculatorScreen() {
 
   const scrollRef = useRef<ScrollView>(null);
 
+  // Filtering of drugs based on the criteria
   const filteredDrugs = useMemo(() => {
     return DRUGS.filter((drug) => {
       const matchesSearch = drug.name
@@ -47,6 +48,7 @@ export default function DrugCalculatorScreen() {
     });
   }, [query, category]);
 
+  // Shifts whole page up when search bar is clicked on
   const handleSearchFocus = () => {
     setTimeout(() => {
       scrollRef.current?.scrollTo({

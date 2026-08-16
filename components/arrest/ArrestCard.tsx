@@ -80,6 +80,7 @@ export default function ArrestCard({
   const [expandedCause, setExpandedCause] = useState<string | null>(null);
   return (
     <>
+      {/* BACK BUTON */}
       {showBack && (
         <Pressable style={styles.backButton} onPress={onBack}>
           <ChevronLeft size={16} color={theme.colors.mutedForeground} />

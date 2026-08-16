@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 
 import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ import ScreenHeader from "@/components/ScreenHeader";
 import { calculateAirway } from "@/utils/airway";
 
 export default function AirwaySizeCalcScreen() {
+  // starts with default set weight, age and gender
   const [age, setAge] = useState(25);
 
   const [weight, setWeight] = useState(70);

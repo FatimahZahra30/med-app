@@ -17,6 +17,7 @@ export default function ReversibleDropdown({
   onPress,
 }: Props) {
   return (
+    // Dropdown cards for each reversible cause
     <View style={styles.dropdown}>
       <Pressable style={styles.header} onPress={onPress}>
         <Text style={styles.title}>{title}</Text>

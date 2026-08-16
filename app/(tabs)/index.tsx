@@ -38,13 +38,13 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
       >
+        {/* DISPLAYS HEADER CARD */}
         <HeaderCard
           title="Anaesthesia Toolkit"
           subtitle="Clinical Reference & Decision Support"
         />
-
         <SectionTitle title="Quick Access" />
-
+        // Feature card for each tool
         <View style={styles.cardRow}>
           <FeatureCard
             title="Drug Calculator"
@@ -75,7 +75,6 @@ export default function HomeScreen() {
             }
           />
         </View>
-
         <View style={styles.cardRow}>
           <FeatureCard
             title="Airway Size Calc"
@@ -101,7 +100,6 @@ export default function HomeScreen() {
             onPress={() => router.push("/difficult")}
           />
         </View>
-
         <View style={styles.cardRow}>
           <FeatureCard
             title="Anesthetic Emergencies"

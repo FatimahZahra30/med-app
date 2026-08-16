@@ -15,6 +15,7 @@ export default function RhythmCountdown({
   running,
   onToggle,
 }: Props) {
+  // AI helped with a lot of the sound related configurations
   const soundRef = useRef<Audio.Sound | null>(null);
   const hasPlayed = useRef(false);
 
@@ -114,15 +115,13 @@ export default function RhythmCountdown({
           )}
         </Pressable>
       </View>
-
       <Text style={[styles.time, isFinished && styles.timeFinished]}>
         {minutes}:{seconds.toString().padStart(2, "0")}
       </Text>
-
+      // UI change based on the end of the timer
       {isFinished && (
         <Text style={styles.labelFinished}>TIME FOR RHYTHM CHECK</Text>
       )}
-
       <View style={[styles.track, isFinished && styles.trackFinished]}>
         <View
           style={[

@@ -39,6 +39,7 @@ export default function ArrestLogDetailsScreen() {
     setLog(savedLog ?? null);
   }, [id]);
 
+  // Ensures all date and timings are properly formatted
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -63,6 +64,7 @@ export default function ArrestLogDetailsScreen() {
     });
   };
 
+  // Precautionary measure incase log doesn't exist
   if (!log) {
     return (
       <View style={styles.notFoundContainer}>
@@ -75,6 +77,7 @@ export default function ArrestLogDetailsScreen() {
     );
   }
 
+  // Splits each event into different sections to be displayed correctly as a log
   const events = log.events as ArrestEvent[];
 
   const shockCount = events.filter((event) => event.type === "shock").length;
@@ -87,6 +90,7 @@ export default function ArrestLogDetailsScreen() {
 
   const roscAchieved = events.some((event) => event.type === "rosc");
 
+  // Formatting for the layout of the pdf in HTML
   const handleDownloadPDF = async () => {
     if (!log) return;
 
@@ -221,6 +225,7 @@ export default function ArrestLogDetailsScreen() {
       )
       .join("");
 
+    // HTML layout of the pdf
     const html = `
       <!DOCTYPE html>
 
@@ -751,6 +756,7 @@ export default function ArrestLogDetailsScreen() {
       </html>
     `;
 
+    // Type of printing depending on whether its native or on the web
     if (Platform.OS === "web") {
       const printWindow = window.open("", "_blank");
 
@@ -971,7 +977,7 @@ export default function ArrestLogDetailsScreen() {
           </View>
         </View>
 
-        {/* DOWNLOAD */}
+        {/* DOWNLOAD OF PDF */}
 
         <Pressable style={styles.downloadButton} onPress={handleDownloadPDF}>
           <FileDown size={19} color="#FFFFFF" />
@@ -1007,15 +1013,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 16,
-
     alignItems: "center",
     justifyContent: "center",
-
     backgroundColor: "#FEF2F2",
-
     borderWidth: 1,
     borderColor: "#FECACA",
-
     marginRight: 12,
   },
 
@@ -1040,14 +1042,10 @@ const styles = StyleSheet.create({
   outcomeCard: {
     flexDirection: "row",
     alignItems: "center",
-
     backgroundColor: "#F0FDF4",
-
     borderWidth: 1,
     borderColor: "#BBF7D0",
-
     borderRadius: 16,
-
     padding: 15,
   },
 
@@ -1055,9 +1053,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-
     backgroundColor: "#16A34A",
-
     marginRight: 12,
   },
 
@@ -1065,16 +1061,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1,
-
     color: "#15803D",
   },
 
   outcomeText: {
     marginTop: 2,
-
     fontSize: 16,
     fontWeight: "700",
-
     color: "#166534",
   },
 
@@ -1086,14 +1079,10 @@ const styles = StyleSheet.create({
 
   sectionCard: {
     backgroundColor: theme.colors.card,
-
     borderWidth: 1,
     borderColor: theme.colors.border,
-
     borderRadius: 20,
-
     padding: 18,
-
     ...theme.shadow.card,
   },
 
@@ -1101,9 +1090,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "800",
     letterSpacing: 1,
-
     color: theme.colors.mutedForeground,
-
     marginBottom: 4,
   },
 
@@ -1118,44 +1105,33 @@ const styles = StyleSheet.create({
   statCard: {
     width: "48%",
     minHeight: 105,
-
     borderRadius: 16,
-
     backgroundColor: "#ffffff",
-
     borderWidth: 1,
     borderColor: "#E2E8F0",
-
     padding: 14,
   },
 
   statIcon: {
     width: 34,
     height: 34,
-
     borderRadius: 10,
-
     backgroundColor: "#f6f5fc",
-
     alignItems: "center",
     justifyContent: "center",
   },
 
   statValue: {
     marginTop: 8,
-
     fontSize: 22,
     fontWeight: "800",
-
     color: "#0F172A",
   },
 
   statLabel: {
     marginTop: 1,
-
     fontSize: 12,
     fontWeight: "600",
-
     color: "#64748B",
   },
 
@@ -1163,14 +1139,10 @@ const styles = StyleSheet.create({
 
   timeCard: {
     marginTop: 2,
-
     backgroundColor: "#FFFFFF",
-
     borderRadius: 16,
-
     borderWidth: 1,
     borderColor: "#E2E8F0",
-
     paddingHorizontal: 15,
     paddingVertical: 4,
   },
@@ -1183,18 +1155,14 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.5,
-
     color: "#94A3B8",
-
     textTransform: "uppercase",
   },
 
   timeValue: {
     marginTop: 3,
-
     fontSize: 14,
     fontWeight: "700",
-
     color: "#334155",
   },
 
@@ -1212,24 +1180,19 @@ const styles = StyleSheet.create({
   timelineItem: {
     flexDirection: "row",
     alignItems: "stretch",
-
     minHeight: 58,
   },
 
   timelineLeft: {
     width: 50,
-
     alignItems: "flex-end",
-
     paddingTop: 1,
   },
 
   elapsed: {
     fontSize: 12,
     fontWeight: "800",
-
     color: "#DC2626",
-
     fontVariant: ["tabular-nums"],
   },
 
@@ -1243,45 +1206,32 @@ const styles = StyleSheet.create({
 
   timelineTrack: {
     width: 9,
-
     marginLeft: 10,
-
     alignItems: "center",
-
     position: "relative",
   },
 
   eventDot: {
     width: 9,
     height: 9,
-
     borderRadius: 5,
-
     backgroundColor: "#DC2626",
-
     marginTop: 3,
-
     zIndex: 2,
   },
 
   timelineLine: {
     position: "absolute",
-
     top: 12,
     bottom: 0,
-
     width: 1,
-
     backgroundColor: "#E2E8F0",
   },
 
   eventContent: {
     flex: 1,
-
     marginLeft: 12,
-
     paddingBottom: 16,
-
     minWidth: 0,
   },
 
@@ -1289,15 +1239,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
     lineHeight: 19,
-
     color: "#334155",
   },
 
   eventTime: {
     marginTop: 3,
-
     fontSize: 11,
-
     color: "#94A3B8",
   },
 
@@ -1305,29 +1252,22 @@ const styles = StyleSheet.create({
 
   notFoundContainer: {
     flex: 1,
-
     backgroundColor: theme.colors.background,
-
     alignItems: "center",
     justifyContent: "center",
-
     padding: 30,
   },
 
   notFoundTitle: {
     fontSize: 20,
     fontWeight: "800",
-
     color: theme.colors.foreground,
   },
 
   notFoundText: {
     marginTop: 6,
-
     fontSize: 14,
-
     color: theme.colors.mutedForeground,
-
     textAlign: "center",
   },
 
@@ -1336,17 +1276,12 @@ const styles = StyleSheet.create({
   downloadButton: {
     minHeight: 52,
     borderRadius: 15,
-
     backgroundColor: "#44378e",
-
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-
     gap: 8,
-
     marginTop: 2,
-
     ...theme.shadow.card,
   },
 
@@ -1359,15 +1294,11 @@ const styles = StyleSheet.create({
   topHeader: {
     height: 64,
     paddingHorizontal: 20,
-
     flexDirection: "row",
     alignItems: "center",
-
     backgroundColor: theme.colors.background,
-
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
-
     position: "relative",
   },
 
@@ -1375,12 +1306,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-
     textAlign: "center",
-
     fontSize: 18,
     fontWeight: "800",
-
     color: theme.colors.foreground,
   },
 
@@ -1388,15 +1316,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-
     alignItems: "center",
     justifyContent: "center",
-
     backgroundColor: theme.colors.card,
-
     borderWidth: 1,
     borderColor: theme.colors.border,
-
     zIndex: 2,
   },
 });

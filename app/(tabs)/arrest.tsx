@@ -61,6 +61,8 @@ export default function CardiacArrestScreen() {
 
   const currentNode = arrestFlow[currentNodeId];
 
+  // Resets all details of cardiac arrest page
+  // including timers and event history
   const resetSession = () => {
     setElapsed(0);
 
@@ -96,10 +98,14 @@ export default function CardiacArrestScreen() {
     }
   }, [newSession]);
 
+  // A new event entry is created in the database at the
+  // start of the algorithm
   useEffect(() => {
     initialiseDatabase();
   }, []);
 
+  // Stores arrest log details if user has reached the last (end)
+  // page of the cardiac arrest algorithm
   useEffect(() => {
     if (currentNodeId === "end" && startedAt) {
       const log = {
@@ -159,6 +165,7 @@ export default function CardiacArrestScreen() {
     return () => clearInterval(interval);
   }, [adrenalineRunning, adrenalineRemaining]);
 
+  // Test whether the events are being added correctly
   useEffect(() => {
     console.log("EVENTS:", events);
   }, [events]);
@@ -182,6 +189,8 @@ export default function CardiacArrestScreen() {
     setAdrenalineRunning(false);
   };
 
+  // Ensures leaving the cardiac arrest page turns of all
+  // running timers
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -190,6 +199,7 @@ export default function CardiacArrestScreen() {
     }, []),
   );
 
+  // Adds details of the particular algorithm run to the database
   const addEvent = (
     type: ArrestEvent["type"],
     description: string,
@@ -207,6 +217,8 @@ export default function CardiacArrestScreen() {
     setEvents((prev) => [...prev, event]);
   };
 
+  // Adds specific actions such as delivering shock or
+  // giving adrenaline to the events of the log
   const handleAction = (action: string) => {
     const lowerAction = action.toLowerCase();
 
@@ -274,6 +286,7 @@ export default function CardiacArrestScreen() {
     });
   };
 
+  // Performs action for when the "yes" button is clicked
   const handleYes = () => {
     if (!currentNode.yes) return;
 
@@ -302,6 +315,7 @@ export default function CardiacArrestScreen() {
     handleNextNode(currentNode.yes);
   };
 
+  // Performs action for when the "no" button is clicked
   const handleNo = () => {
     if (!currentNode.no) return;
 
@@ -324,6 +338,7 @@ export default function CardiacArrestScreen() {
     handleNextNode(currentNode.no);
   };
 
+  // Performs action of going back to the previous steps of the algorithm
   const handleBack = () => {
     if (history.length === 0) return;
 
@@ -345,6 +360,7 @@ export default function CardiacArrestScreen() {
     resetSession();
   };
 
+  // For showing reversible causes
   const toggleCause = (cause: string) => {
     setExpandedCause((prev) => (prev === cause ? null : cause));
   };
@@ -368,6 +384,7 @@ export default function CardiacArrestScreen() {
     "Thrombosis (PE)",
   ];
 
+  // gets each reversible causes from the cardiac arrest data
   const getCause = (name: string) =>
     REVERSIBLE.find((cause) => cause.name === name);
 

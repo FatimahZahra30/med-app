@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 
 import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,10 +15,10 @@ import EmergencyCard from "@/components/EmergencyCard";
 import ScreenHeader from "@/components/ScreenHeader";
 import SearchBar from "@/components/SearchBar";
 
+import ClinicalNotice from "@/components/ClinicalNotice";
+import EmergencyModal from "@/components/EmergencyModal";
 import { emergencies } from "@/data/emergencies";
 import { Emergency } from "@/types/emergency";
-import EmergencyModal from "@/components/EmergencyModal";
-import ClinicalNotice from "@/components/ClinicalNotice";
 import { TriangleAlert } from "lucide-react-native";
 
 export default function AnesthEmergenciesScreen() {
@@ -40,6 +40,7 @@ export default function AnesthEmergenciesScreen() {
     }, 250);
   };
 
+  // Allows filtering of emergencies when searched
   const filteredEmergencies = emergencies.filter(
     (item) =>
       item.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -67,19 +68,9 @@ export default function AnesthEmergenciesScreen() {
           />
 
           <ClinicalNotice
-
             title="Clinical Reference"
-
-            icon={
-              <TriangleAlert
-                size={18}
-                color="#ed182d"
-              />
-            }
-
+            icon={<TriangleAlert size={18} color="#ed182d" />}
             body="Clinical reference based on Royal College of Anaesthetists (RCoA) / AAGBI guidelines. Always follow local protocols and call for senior help early."
-
-
           />
 
           <SearchBar
