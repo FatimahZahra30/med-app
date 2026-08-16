@@ -752,7 +752,6 @@ export default function ArrestLogDetailsScreen() {
     `;
 
     if (Platform.OS === "web") {
-      // Open the PDF content in a new browser tab.
       const printWindow = window.open("", "_blank");
 
       if (!printWindow) {
@@ -763,10 +762,10 @@ export default function ArrestLogDetailsScreen() {
       printWindow.document.write(html);
       printWindow.document.close();
 
-      printWindow.onload = () => {
+      setTimeout(() => {
         printWindow.focus();
         printWindow.print();
-      };
+      }, 300);
 
       return;
     }
@@ -774,14 +773,6 @@ export default function ArrestLogDetailsScreen() {
     const { uri } = await Print.printToFileAsync({
       html,
     });
-
-    if (await Sharing.isAvailableAsync()) {
-      await Sharing.shareAsync(uri, {
-        mimeType: "application/pdf",
-        dialogTitle: "Save Cardiac Arrest Log",
-        UTI: "com.adobe.pdf",
-      });
-    }
 
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(uri, {
