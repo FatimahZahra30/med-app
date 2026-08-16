@@ -19,7 +19,6 @@ import {
 
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
-import html2pdf from "html2pdf.js";
 
 import { theme } from "@/constants/theme";
 import { ArrestLog, getArrestLogs } from "@/database/arrestLogs";
@@ -753,6 +752,8 @@ export default function ArrestLogDetailsScreen() {
     `;
 
     if (Platform.OS === "web") {
+      const { default: html2pdf } = await import("html2pdf.js");
+
       const container = document.createElement("div");
 
       container.innerHTML = html;
