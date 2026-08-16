@@ -7,9 +7,7 @@ import { theme } from "@/constants/theme";
 import { ArrestEvent, ArrestNode } from "@/types/cardiacArrest";
 
 import AdrenalineTimer from "@/components/arrest/AdrenalineTimer";
-import ReversibleDropdown from "@/components/arrest/ReversibleCauses";
 import RhythmCountdown from "@/components/arrest/RythmCountdown";
-import { REVERSIBLE } from "@/data/cardiacArrest";
 import ArrestSummaryCard from "./ArrestSummary";
 
 type Props = {
@@ -224,31 +222,6 @@ export default function ArrestCard({
         {adrenalineGiven && currentNodeId !== "end" && (
           <View style={styles.adrTimer}>
             <AdrenalineTimer remaining={adrenalineRemaining} />
-          </View>
-        )}
-
-        {/* REVERSIBLE CAUSES */}
-        {node.title === "CPR & Reversible Causes" && (
-          <View style={styles.reversibleContainer}>
-            <View style={styles.reversibleHeader}>
-              <Text style={styles.reversibleTitle}>Reversible Causes</Text>
-            </View>
-
-            <View style={styles.reversibleList}>
-              {REVERSIBLE.map((cause) => (
-                <ReversibleDropdown
-                  key={cause.name}
-                  title={cause.name}
-                  description={cause.detail}
-                  expanded={expandedCause === cause.name}
-                  onPress={() =>
-                    setExpandedCause(
-                      expandedCause === cause.name ? null : cause.name,
-                    )
-                  }
-                />
-              ))}
-            </View>
           </View>
         )}
 

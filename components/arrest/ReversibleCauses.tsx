@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: "700",
-    color: "#7d51a0",
+    color: "#793df0",
   },
 
   descriptionContainer: {

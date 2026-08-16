@@ -1,9 +1,13 @@
+import { X } from "lucide-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -15,13 +19,19 @@ import { theme } from "@/constants/theme";
 import ScreenHeader from "@/components/ScreenHeader";
 import ArrestCard from "@/components/arrest/ArrestCard";
 import ArrestTimer from "@/components/arrest/ArrestTimer";
+import ReversibleDropdown from "@/components/arrest/ReversibleCauses";
+
 import { ArrestEvent } from "@/types/cardiacArrest";
 
-import { arrestFlow } from "@/data/cardiacArrest";
+import { arrestFlow, REVERSIBLE } from "@/data/cardiacArrest";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 
 export default function CardiacArrestScreen() {
   const { newSession } = useLocalSearchParams();
+
+  const [showReversibleCauses, setShowReversibleCauses] = useState(false);
+
+  const [expandedCause, setExpandedCause] = useState<string | null>(null);
 
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
@@ -39,6 +49,7 @@ export default function CardiacArrestScreen() {
   const [adrenalineGiven, setAdrenalineGiven] = useState(false);
 
   const [completedActions, setCompletedActions] = useState<string[]>([]);
+
   const [adrenalineRemaining, setAdrenalineRemaining] = useState(30);
   const [adrenalineRunning, setAdrenalineRunning] = useState(false);
 
@@ -132,7 +143,7 @@ export default function CardiacArrestScreen() {
     return () => clearInterval(interval);
   }, [rhythmRunning, rhythmRemaining]);
 
-  // ADRENALINE 3 MINUTE COUNTDOWN
+  // ADRENALINE COUNTDOWN
   useEffect(() => {
     if (!adrenalineRunning) return;
 
@@ -173,12 +184,7 @@ export default function CardiacArrestScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      // Screen is focused.
-      // Timers can run normally.
-
       return () => {
-        // Screen is leaving / losing focus.
-        // Stop every active timer.
         stopAllTimers();
       };
     }, []),
@@ -208,7 +214,6 @@ export default function CardiacArrestScreen() {
     if (lowerAction.includes("shock")) {
       const actionKey = `${currentNodeId}-${action}`;
 
-      // Don't record the same shock twice
       if (completedActions.includes(actionKey)) {
         return;
       }
@@ -222,18 +227,14 @@ export default function CardiacArrestScreen() {
 
     // ADRENALINE
     if (lowerAction.includes("adrenaline")) {
-      // Don't allow another dose while the current timer is running
       if (adrenalineRunning && adrenalineRemaining > 0) {
         return;
       }
 
-      // Record the adrenaline event
       addEvent("adrenaline", "Adrenaline given — 1 mg IV");
 
-      // A dose has now been given
       setAdrenalineGiven(true);
 
-      // Start/restart the countdown
       setAdrenalineRemaining(30);
       setAdrenalineRunning(true);
 
@@ -253,17 +254,12 @@ export default function CardiacArrestScreen() {
   const handleNextNode = (nextNodeId: string) => {
     const nextNode = arrestFlow[nextNodeId];
 
-    // If the next node needs a rhythm timer:
     if (nextNode.timer && nextNode.timerDuration) {
-      // Start a new timer if the CURRENT node
-      // does not have a timer running.
       if (!currentNode.timer || !rhythmRunning) {
         startRhythmTimer(nextNode.timerDuration);
       }
     }
 
-    // If we're moving to a node without a timer,
-    // stop the current rhythm timer.
     if (!nextNode.timer) {
       setRhythmRunning(false);
       setRhythmRemaining(120);
@@ -287,10 +283,10 @@ export default function CardiacArrestScreen() {
       setStarted(true);
       setRunning(true);
       setStartedAt(startTime);
+
       addEvent("start", "Cardiac arrest algorithm started", "start");
     }
 
-    // Rhythm assessment
     if (currentNodeId === "rhythm" || currentNodeId === "rhythm2") {
       addEvent("rhythm", "Rhythm assessed — Shockable", currentNodeId);
     }
@@ -315,10 +311,10 @@ export default function CardiacArrestScreen() {
       setStarted(true);
       setRunning(true);
       setStartedAt(startTime);
+
       addEvent("start", "Cardiac arrest algorithm started", "start");
     }
 
-    // Rhythm assessment
     if (currentNodeId === "rhythm" || currentNodeId === "rhythm2") {
       addEvent("rhythm", "Rhythm assessed — Shockable", currentNodeId);
     }
@@ -349,12 +345,57 @@ export default function CardiacArrestScreen() {
     resetSession();
   };
 
+  const toggleCause = (cause: string) => {
+    setExpandedCause((prev) => (prev === cause ? null : cause));
+  };
+
+  /*
+   * 4 Hs
+   */
+  const hs = ["Hypoxia", "Hypovolaemia", "Hypo/hyperkalaemia", "Hypothermia"];
+
+  /*
+   * 4 Ts
+   *
+   * Note that thrombosis has TWO entries in REVERSIBLE:
+   * cardiac and PE.
+   */
+  const ts = [
+    "Tension pneumothorax",
+    "Tamponade",
+    "Toxins",
+    "Thrombosis (cardiac)",
+    "Thrombosis (PE)",
+  ];
+
+  const getCause = (name: string) =>
+    REVERSIBLE.find((cause) => cause.name === name);
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
+        {/* FLOATING REVERSIBLE CAUSES BUTTON */}
+
+        <View style={styles.reversibleButtonWrapper}>
+          <View style={styles.reversibleGlow} />
+
+          <Pressable
+            style={styles.reversibleButton}
+            onPress={() => {
+              setShowReversibleCauses(true);
+              setExpandedCause(null);
+            }}
+          >
+            <Text style={styles.reversibleButtonTop}>4H</Text>
+            <Text style={styles.reversibleButtonBottom}>4T</Text>
+          </Pressable>
+        </View>
+
+        {/* MAIN CONTENT */}
+
         <ScrollView
           ref={scrollRef}
           showsVerticalScrollIndicator={false}
@@ -399,6 +440,95 @@ export default function CardiacArrestScreen() {
             onToggleRhythm={toggleRhythmTimer}
           />
         </ScrollView>
+
+        {/* REVERSIBLE CAUSES MODAL */}
+
+        {showReversibleCauses && (
+          <View style={styles.overlay}>
+            <Pressable
+              style={StyleSheet.absoluteFill}
+              onPress={() => setShowReversibleCauses(false)}
+            />
+
+            <View style={styles.reversibleModal}>
+              {/* MODAL HEADER */}
+
+              <View style={styles.modalHeader}>
+                <View style={styles.modalHeaderText}>
+                  <Text style={styles.modalTitle}>Reversible Causes</Text>
+
+                  <Text style={styles.modalSubtitle}>
+                    Consider throughout the arrest
+                  </Text>
+                </View>
+
+                <Pressable
+                  onPress={() => setShowReversibleCauses(false)}
+                  style={styles.closeButton}
+                >
+                  <X size={20} color={theme.colors.foreground} />
+                </Pressable>
+              </View>
+
+              {/* SCROLLABLE CAUSES */}
+
+              <ScrollView
+                style={styles.causesScroll}
+                contentContainerStyle={styles.causesContent}
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled
+              >
+                {/* 4 HS */}
+
+                <Text style={styles.causesHeading}>4 Hs</Text>
+
+                <View style={styles.dropdownGroup}>
+                  {hs.map((name) => {
+                    const cause = getCause(name);
+
+                    if (!cause) return null;
+
+                    return (
+                      <ReversibleDropdown
+                        key={cause.name}
+                        title={cause.name}
+                        description={cause.detail}
+                        expanded={expandedCause === cause.name}
+                        onPress={() => toggleCause(cause.name)}
+                      />
+                    );
+                  })}
+                </View>
+
+                {/* 4 TS */}
+
+                <Text style={[styles.causesHeading, styles.tsHeading]}>
+                  4 Ts
+                </Text>
+
+                <View style={styles.dropdownGroup}>
+                  {ts.map((name) => {
+                    const cause = getCause(name);
+
+                    if (!cause) return null;
+
+                    return (
+                      <ReversibleDropdown
+                        key={cause.name}
+                        title={cause.name}
+                        description={cause.detail}
+                        expanded={expandedCause === cause.name}
+                        onPress={() => toggleCause(cause.name)}
+                      />
+                    );
+                  })}
+                </View>
+
+                <View style={styles.modalBottomSpace} />
+              </ScrollView>
+            </View>
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -409,10 +539,216 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
+
   content: {
     paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.md,
     paddingBottom: 120,
     gap: 18,
+  },
+
+  /*
+   * FLOATING BUTTON
+   */
+
+  reversibleButtonWrapper: {
+    position: "absolute",
+    right: 20,
+    bottom: 24,
+
+    width: 58,
+    height: 58,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    zIndex: 20,
+    elevation: 20,
+  },
+
+  /*
+   * BLURRED GLOW
+   */
+
+  reversibleGlow: {
+    position: "absolute",
+
+    width: 58,
+    height: 58,
+
+    borderRadius: 29,
+
+    backgroundColor: "transparent",
+
+    shadowColor: "#6D4AFF",
+
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+
+    shadowOpacity: 0.65,
+    shadowRadius: 16,
+
+    elevation: 12,
+  },
+
+  reversibleButton: {
+    width: 58,
+    height: 58,
+
+    borderRadius: 29,
+
+    backgroundColor: "#6D4AFF",
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    ...theme.shadow.card,
+  },
+
+  reversibleButtonTop: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "800",
+    lineHeight: 16,
+  },
+
+  reversibleButtonBottom: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "800",
+    lineHeight: 16,
+  },
+
+  /*
+   * MODAL OVERLAY
+   */
+
+  overlay: {
+    position: "absolute",
+
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+
+    backgroundColor: "rgba(15, 23, 42, 0.45)",
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    paddingHorizontal: 24,
+
+    zIndex: 50,
+    elevation: 50,
+  },
+
+  /*
+   * CENTERED MODAL
+   */
+
+  reversibleModal: {
+    width: "100%",
+    maxWidth: 420,
+
+    maxHeight: "78%",
+
+    backgroundColor: theme.colors.background,
+
+    borderRadius: 22,
+
+    overflow: "hidden",
+
+    ...theme.shadow.card,
+  },
+
+  /*
+   * MODAL HEADER
+   */
+
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 16,
+
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+
+  modalHeaderText: {
+    flex: 1,
+    paddingRight: 12,
+  },
+
+  modalTitle: {
+    fontSize: 21,
+    fontWeight: "800",
+
+    color: theme.colors.foreground,
+  },
+
+  modalSubtitle: {
+    marginTop: 3,
+
+    fontSize: 13,
+
+    color: theme.colors.mutedForeground,
+  },
+
+  closeButton: {
+    width: 38,
+    height: 38,
+
+    borderRadius: 20,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    backgroundColor: theme.colors.card,
+
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+
+  /*
+   * CAUSES
+   */
+
+  causesScroll: {
+    flexGrow: 0,
+  },
+
+  causesContent: {
+    padding: 20,
+  },
+
+  causesHeading: {
+    fontSize: 13,
+    fontWeight: "800",
+
+    letterSpacing: 0.8,
+
+    color: "#3B0969",
+
+    marginBottom: 10,
+
+    textTransform: "uppercase",
+  },
+
+  tsHeading: {
+    marginTop: 22,
+  },
+
+  dropdownGroup: {
+    gap: 9,
+  },
+
+  modalBottomSpace: {
+    height: 4,
   },
 });
