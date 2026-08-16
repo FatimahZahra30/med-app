@@ -563,48 +563,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
 
     zIndex: 20,
-    elevation: 20,
   },
-
-  /*
-   * BLURRED GLOW
-   */
 
   reversibleGlow: {
     position: "absolute",
 
-    width: 58,
-    height: 58,
-
+    width: 53,
+    height: 53,
     borderRadius: 29,
 
-    backgroundColor: "transparent",
+    backgroundColor: "#6D4AFF",
 
     shadowColor: "#6D4AFF",
-
     shadowOffset: {
       width: 0,
       height: 0,
     },
+    shadowOpacity: 0.75,
+    shadowRadius: 18,
 
-    shadowOpacity: 0.65,
-    shadowRadius: 16,
-
-    elevation: 12,
+    elevation: 18,
   },
 
   reversibleButton: {
     width: 58,
     height: 58,
-
     borderRadius: 29,
 
     backgroundColor: "#6D4AFF",
 
     alignItems: "center",
     justifyContent: "center",
-
-    ...theme.shadow.card,
   },
 
   reversibleButtonTop: {
