@@ -32,7 +32,7 @@ export default function LogsScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Logs</Text>
 
-        <Text style={styles.subtitle}>Previous cardiac arrest sessions</Text>
+        <Text style={styles.subtitle}>Your saved clinical sessions</Text>
       </View>
 
       {/* EMPTY STATE */}

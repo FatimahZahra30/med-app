@@ -54,3 +54,34 @@ export function getArrestLogs(): ArrestLog[] {
     events: JSON.parse(row.events),
   }));
 }
+
+// GET ONE ARREST LOG BY ID
+export function getArrestLogById(id: string): ArrestLog | null {
+  const row = db.getFirstSync<{
+    id: string;
+    started_at: string;
+    completed_at: string;
+    duration: number;
+    events: string;
+  }>(
+    `
+      SELECT *
+      FROM arrest_logs
+      WHERE id = ?
+      LIMIT 1;
+    `,
+    [id],
+  );
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    startedAt: row.started_at,
+    completedAt: row.completed_at,
+    duration: row.duration,
+    events: JSON.parse(row.events),
+  };
+}
