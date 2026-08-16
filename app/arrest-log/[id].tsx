@@ -19,6 +19,7 @@ import {
 
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import html2pdf from "html2pdf.js";
 
 import { theme } from "@/constants/theme";
 import { ArrestLog, getArrestLogs } from "@/database/arrestLogs";
@@ -752,20 +753,40 @@ export default function ArrestLogDetailsScreen() {
     `;
 
     if (Platform.OS === "web") {
-      const printWindow = window.open("", "_blank");
+      const container = document.createElement("div");
 
-      if (!printWindow) {
-        alert("Please allow pop-ups to print this record.");
-        return;
+      container.innerHTML = html;
+
+      container.style.position = "absolute";
+      container.style.left = "-9999px";
+      container.style.top = "0";
+      container.style.width = "794px";
+
+      document.body.appendChild(container);
+
+      const options = {
+        margin: 0,
+        filename: `cardiac-arrest-${log.id}.pdf`,
+        image: {
+          type: "jpeg" as const,
+          quality: 0.98,
+        },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+        },
+        jsPDF: {
+          unit: "px" as const,
+          format: "a4" as const,
+          orientation: "portrait" as const,
+        },
+      };
+
+      try {
+        await html2pdf().set(options).from(container).save();
+      } finally {
+        document.body.removeChild(container);
       }
-
-      printWindow.document.write(html);
-      printWindow.document.close();
-
-      setTimeout(() => {
-        printWindow.focus();
-        printWindow.print();
-      }, 300);
 
       return;
     }
