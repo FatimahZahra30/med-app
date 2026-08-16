@@ -1,5 +1,12 @@
-import { useLocalSearchParams } from "expo-router";
-import { Clock, FileDown, HeartPulse, Syringe, Zap } from "lucide-react-native";
+import { Stack, router, useLocalSearchParams } from "expo-router";
+import {
+  ArrowLeft,
+  Clock,
+  FileDown,
+  HeartPulse,
+  Syringe,
+  Zap,
+} from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
   Platform,
@@ -16,6 +23,7 @@ import * as Sharing from "expo-sharing";
 import { theme } from "@/constants/theme";
 import { ArrestLog, getArrestLogs } from "@/database/arrestLogs";
 import { ArrestEvent } from "@/types/cardiacArrest";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ArrestLogDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -785,7 +793,29 @@ export default function ArrestLogDetailsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <View style={styles.topHeader}>
+        <Pressable
+          onPress={() => router.back()}
+          style={styles.backButton}
+          hitSlop={8}
+        >
+          <ArrowLeft
+            size={21}
+            strokeWidth={2.5}
+            color={theme.colors.foreground}
+          />
+        </Pressable>
+
+        <Text style={styles.topHeaderTitle}>Session Log</Text>
+      </View>
+
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -958,7 +988,7 @@ export default function ArrestLogDetailsScreen() {
           <Text style={styles.downloadButtonText}>Download as PDF</Text>
         </Pressable>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -1333,5 +1363,49 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "800",
+  },
+
+  topHeader: {
+    height: 64,
+    paddingHorizontal: 20,
+
+    flexDirection: "row",
+    alignItems: "center",
+
+    backgroundColor: theme.colors.background,
+
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+
+    position: "relative",
+  },
+
+  topHeaderTitle: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+
+    textAlign: "center",
+
+    fontSize: 18,
+    fontWeight: "800",
+
+    color: theme.colors.foreground,
+  },
+
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    backgroundColor: theme.colors.card,
+
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+
+    zIndex: 2,
   },
 });
