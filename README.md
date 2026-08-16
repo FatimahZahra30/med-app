@@ -1,50 +1,72 @@
-# Welcome to your Expo app 👋
+## Setup & Running
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+### Hosted Online
 
-## Get started
+https://anaesthesia-toolkit.vercel.app/
 
-1. Install dependencies
+open site on mobile phone to ensure best experience of using this medical app
 
-   ```bash
-   npm install
-   ```
+### Prerequisites
 
-2. Start the app
+Make sure you have the following installed:
 
-   ```bash
-   npx expo start
-   ```
+- Node.js (LTS recommended)
+- Git
+- Expo Go on an iOS or Android device
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Clone the repository
 
 ```bash
-npm run reset-project
+git clone https://github.com/FatimahZahra30/med-app.git
+cd med-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Install dependencies
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Start the Expo development server
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx expo start
+```
 
-## Join the community
+A QR code will appear in the terminal.
 
-Join our community of developers creating universal apps.
+### 4. Open the app
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+**iOS:**
+
+- Open the Camera app on your iPhone.
+- Scan the QR code.
+- Select **Open in Expo Go**.
+
+**Android:**
+
+- Open the Expo Go app.
+- Scan the QR code from the Expo development server.
+
+If the device cannot connect to the development server, try starting Expo using a tunnel:
+
+```bash
+npx expo start --tunnel
+```
+
+Then scan the new QR code.
+
+### 5. Testing the application
+
+Once the application is running, the main workflows to test are:
+
+- **Cardiac Arrest:** Start a cardiac arrest session and interact with the algorithm to record events.
+- **Session Logs:** Complete a session and view the recorded session in the logs.
+- **Session Details:** Open a saved session to view its timeline, summary, and outcome.
+- **PDF Export:** From a completed session, select **Download as PDF** to export the session record.
+
+### Notes
+
+The application uses local device storage for session logs, so data is stored locally on the device running the application.
+
+For the most reliable experience, testing on a physical device through Expo Go is recommended.
