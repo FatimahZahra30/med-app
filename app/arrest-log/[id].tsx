@@ -1,7 +1,14 @@
 import { useLocalSearchParams } from "expo-router";
 import { Clock, FileDown, HeartPulse, Syringe, Zap } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
@@ -736,9 +743,37 @@ export default function ArrestLogDetailsScreen() {
       </html>
     `;
 
+    if (Platform.OS === "web") {
+      // Open the PDF content in a new browser tab.
+      const printWindow = window.open("", "_blank");
+
+      if (!printWindow) {
+        alert("Please allow pop-ups to print this record.");
+        return;
+      }
+
+      printWindow.document.write(html);
+      printWindow.document.close();
+
+      printWindow.onload = () => {
+        printWindow.focus();
+        printWindow.print();
+      };
+
+      return;
+    }
+
     const { uri } = await Print.printToFileAsync({
       html,
     });
+
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(uri, {
+        mimeType: "application/pdf",
+        dialogTitle: "Save Cardiac Arrest Log",
+        UTI: "com.adobe.pdf",
+      });
+    }
 
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(uri, {

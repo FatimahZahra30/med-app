@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -18,7 +18,7 @@ import ArrestTimer from "@/components/arrest/ArrestTimer";
 import { ArrestEvent } from "@/types/cardiacArrest";
 
 import { arrestFlow } from "@/data/cardiacArrest";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 
 export default function CardiacArrestScreen() {
   const { newSession } = useLocalSearchParams();
@@ -170,6 +170,19 @@ export default function CardiacArrestScreen() {
     setRhythmRunning(false);
     setAdrenalineRunning(false);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      // Screen is focused.
+      // Timers can run normally.
+
+      return () => {
+        // Screen is leaving / losing focus.
+        // Stop every active timer.
+        stopAllTimers();
+      };
+    }, []),
+  );
 
   const addEvent = (
     type: ArrestEvent["type"],
