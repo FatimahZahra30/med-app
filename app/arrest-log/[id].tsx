@@ -752,42 +752,20 @@ export default function ArrestLogDetailsScreen() {
     `;
 
     if (Platform.OS === "web") {
-      const { default: html2pdf } = await import("html2pdf.js");
+      const printWindow = window.open("", "_blank");
 
-      const container = document.createElement("div");
-
-      container.innerHTML = html;
-
-      container.style.position = "absolute";
-      container.style.left = "-9999px";
-      container.style.top = "0";
-      container.style.width = "794px";
-
-      document.body.appendChild(container);
-
-      const options = {
-        margin: 0,
-        filename: `cardiac-arrest-${log.id}.pdf`,
-        image: {
-          type: "jpeg" as const,
-          quality: 0.98,
-        },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-        },
-        jsPDF: {
-          unit: "px" as const,
-          format: "a4" as const,
-          orientation: "portrait" as const,
-        },
-      };
-
-      try {
-        await html2pdf().set(options).from(container).save();
-      } finally {
-        document.body.removeChild(container);
+      if (!printWindow) {
+        alert("Please allow pop-ups to print this record.");
+        return;
       }
+
+      printWindow.document.write(html);
+      printWindow.document.close();
+
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 300);
 
       return;
     }
